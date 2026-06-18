@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Live Meeting Transcript</title>
+<style>
+  :root {
+    --bg: #16181d;
+    --card: #232730;
+    --card-hover: #2c313c;
+    --accent: #4f9dff;
+    --green: #3ddc84;
+    --red: #ff6b6b;
+    --text: #eaeaea;
+    --muted: #8a8f98;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid #2a2e38;
+    z-index: 10;
+  }
+  h1 {
+    font-size: 1.4em;
+    margin: 0 0 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--red);
+    display: inline-block;
+  }
+  .dot.live { background: var(--green); box-shadow: 0 0 8px var(--green); }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  button {
+    background: var(--accent);
+    color: #08131f;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95em;
+    font-weight: 600;
+  }
+  button.secondary {
+    background: #3a3f4b;
+    color: var(--text);
+    font-weight: 500;
+  }
+  button:hover { opacity: 0.9; }
+  button:active { transform: scale(0.98); }
+
+  .toggle-instructions {
+    background: none;
+    color: var(--muted);
+    text-decoration: underline;
+    font-weight: 400;
+    padding: 6px 0;
+    font-size: 0.85em;
+  }
+
+  .instructions {
+    background: #1c1f26;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.9em;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-top: 8px;
+  }
+  .instructions ol { margin: 8px 0 0 18px; padding: 0; }
+  .instructions code {
+    background: #2a2e38; padding: 2px 6px; border-radius: 4px; color: var(--text);
+  }
+  .hidden { display: none; }
+
+  main { padding: 16px 20px; max-width: 800px; margin: 0 auto; }
+
+  #partialWrap {
+    min-height: 28px;
+    margin-bottom: 12px;
+    padding: 0 4px;
+  }
+  #partial {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 1.05em;
+  }
+
+  .empty-state {
+    color: var(--muted);
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 0.95em;
+  }
+
+  .entry {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+  .entry:hover { background: var(--card-hover); }
+  .entry.flash { background: var(--green) !important; }
+  .entry.flash .text, .entry.flash .meta { color: #08131f; }
+  .entry.selected { background: #1f3a52; outline: 1px solid var(--accent); }
+  .entry .meta {
+    color: var(--muted);
+    font-size: 0.78em;
+    margin-bottom: 4px;
+  }
+  .entry .text {
+    font-size: 1.08em;
+    line-height: 1.45;
+  }
+  .entry .left { flex: 1; min-width: 0; display: flex; gap: 12px; align-items: flex-start; }
+  .entry input[type="checkbox"] {
+    margin-top: 4px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .copy-btn {
+    flex-shrink: 0;
+    background: #3a3f4b;
+    color: var(--text);
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    white-space: nowrap;
+  }
+  .copy-btn:hover { background: #4a505e; }
+  .copy-btn.copied { background: var(--green); color: #08131f; }
+
+  .selection-bar {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--accent);
+    color: #08131f;
+    padding: 12px 20px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    transition: transform 0.2s ease;
+    z-index: 20;
+    font-weight: 600;
+  }
+  .selection-bar.visible { transform: translateX(-50%) translateY(0); }
+  .selection-bar button {
+    background: #08131f;
+    color: var(--text);
+    padding: 8px 16px;
+    font-size: 0.85em;
+  }
+  .selection-bar .sel-clear {
+    background: transparent;
+    color: #08131f;
+    text-decoration: underline;
+    font-weight: 500;
+    padding: 4px 6px;
+  }
+
+  .header-top {
+    margin-bottom: 8px;
+  }
+  .version {
+    font-size: 0.75em;
+    color: var(--muted);
+    background: #2a2e38;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+  }
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  #searchInput {
+    flex: 1;
+    max-width: 320px;
+    background: #2a2e38;
+    border: 1px solid #3a3f4b;
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.9em;
+    outline: none;
+  }
+  #searchInput:focus { border-color: var(--accent); }
+  #searchCount { color: var(--muted); font-size: 0.82em; min-width: 70px; }
+  .entry.highlight { outline: 2px solid var(--accent); }
+  .entry.highlight-current { outline: 2px solid var(--green) !important; background: #1a3a2a !important; }
+  mark { background: #4f9dff44; color: inherit; border-radius: 2px; padding: 0 1px; }
+  mark.current { background: #3ddc8466; }
+  .save-menu {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    background: #2a2e38;
+    border: 1px solid #3a3f4b;
+    border-radius: 8px;
+    min-width: 200px;
+    z-index: 30;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    overflow: hidden;
+    display: none;
+  }
+  .save-menu.open { display: block; }
+  .save-menu button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    color: var(--text);
+    padding: 10px 16px;
+    font-size: 0.9em;
+    font-weight: 400;
+    border-radius: 0;
+  }
+  .save-menu button:hover { background: #3a3f4b; }
+  .save-wrap { position: relative; display: inline-block; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <h1><span class="dot" id="statusDot"></span>Live Meeting Transcript <span class="version">v2.4</span></h1>
+  </div>
+  <div class="controls">
+    <button id="toggleBtn">▶ Start Listening</button>
+    <button class="secondary" id="newMeetingBtn">New Meeting</button>
+    <button class="secondary" id="clearBtn">Clear all</button>
+    <div class="save-wrap">
+      <button class="secondary" id="saveBtn">⬇ Save ▾</button>
+      <div class="save-menu" id="saveMenu">
+        <button id="saveTxt">📄 Save as .txt (Desktop)</button>
+        <button id="saveJson">📋 Save as .json</button>
+        <button id="saveDrive">☁ Copy for Google Drive</button>
+      </div>
+    </div>
+    <span id="countLabel" style="color: var(--muted); font-size: 0.85em;"></span>
+    <span id="restartLabel" style="color: var(--muted); font-size: 0.8em;"></span>
+  </div>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="🔍  Search transcript..." autocomplete="off" />
+    <span id="searchCount"></span>
+    <button class="secondary" id="searchPrev">▲</button>
+    <button class="secondary" id="searchNext">▼</button>
+    <button class="secondary" id="searchClear" style="display:none;">✕</button>
+  </div>
+  <button class="toggle-instructions" id="instrBtn">Show setup instructions</button>
+  <div class="instructions hidden" id="instructions">
+    <strong>One-time setup before each call:</strong>
+    <ol>
+      <li>Open <strong>Voicemeeter Banana</strong> and leave it running in the background.</li>
+      <li>In Windows Sound Settings → Recording, set <code>Voicemeeter Out B1</code> as the default device.</li>
+      <li>Click "Start Listening" below, and allow microphone access if prompted.</li>
+      <li>Join your Meet call as normal — you'll hear/speak as usual.</li>
+      <li>When a line appears below, click <strong>Copy</strong> and paste it into ChatGPT.</li>
+    </ol>
+  </div>
+</header>
+
+<main>
+  <div id="partialWrap"><span id="partial"></span></div>
+  <div id="emptyState" class="empty-state">No transcript yet — click "Start Listening" above.</div>
+  <div id="lines"></div>
+</main>
+
+<footer>Runs entirely in your browser. Nothing is sent anywhere except to Chrome's built-in speech recognition.</footer>
+
+<div class="selection-bar" id="selectionBar">
+  <span id="selectionCount">0 selected</span>
+  <button class="sel-clear" id="clearSelectionBtn">Clear selection</button>
+</div>
+
+<script>
+const SpeechRecognitionImpl = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let running = false;
+let count = 0;
+let restartCount = 0;
+const restartLabel = document.getElementById('restartLabel');
+
+const toggleBtn = document.getElementById('toggleBtn');
+const clearBtn = document.getElementById('clearBtn');
+const statusDot = document.getElementById('statusDot');
+const partialEl = document.getElementById('partial');
+const linesEl = document.getElementById('lines');
+const emptyState = document.getElementById('emptyState');
+const countLabel = document.getElementById('countLabel');
+const instrBtn = document.getElementById('instrBtn');
+const instructions = document.getElementById('instructions');
+
+instrBtn.addEventListener('click', () => {
+  instructions.classList.toggle('hidden');
+  instrBtn.textContent = instructions.classList.contains('hidden')
+    ? 'Show setup instructions' : 'Hide setup instructions';
+});
+
+function updateCount() {
+  countLabel.textContent = count > 0 ? (count + ' line' + (count === 1 ? '' : 's')) : '';
+}
+
+const selected = new Map(); // seq -> text
+let seqCounter = 0;
+const selectionBar = document.getElementById('selectionBar');
+const selectionCount = document.getElementById('selectionCount');
+const clearSelectionBtn = document.getElementById('clearSelectionBtn');
+
+function updateSelectionBar() {
+  const n = selected.size;
+  selectionCount.textContent = n + (n === 1 ? ' selected — copied' : ' selected — copied');
+  selectionBar.classList.toggle('visible', n > 0);
+}
+
+function copySelection() {
+  const ordered = [...selected.entries()].sort((a, b) => a[0] - b[0]);
+  const combined = ordered.map(([, t]) => t).join('\n\n');
+  if (combined) navigator.clipboard.writeText(combined);
+}
+
+function toggleSelect(entry, seq, text, checkbox) {
+  const copyBtn = entry.querySelector('.copy-btn');
+  if (selected.has(seq)) {
+    selected.delete(seq);
+    entry.classList.remove('selected');
+    checkbox.checked = false;
+    if (copyBtn) { copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied'); }
+  } else {
+    selected.set(seq, text);
+    entry.classList.add('selected');
+    checkbox.checked = true;
+    if (copyBtn) { copyBtn.textContent = '✓'; copyBtn.classList.add('copied'); }
+  }
+  updateSelectionBar();
+  copySelection();
+  entry.classList.add('flash');
+  setTimeout(() => entry.classList.remove('flash'), 250);
+}
+
+function addFinalLine(text) {
+  text = text.trim();
+  if (!text) return;
+
+  emptyState.classList.add('hidden');
+  count++;
+  updateCount();
+  seqCounter++;
+  const seq = seqCounter;
+
+  const entry = document.createElement('div');
+  entry.className = 'entry';
+
+  const left = document.createElement('div');
+  left.className = 'left';
+
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleSelect(entry, seq, text, checkbox);
+  });
+
+  const textWrap = document.createElement('div');
+  textWrap.style.flex = '1';
+  textWrap.style.minWidth = '0';
+
+  const meta = document.createElement('div');
+  meta.className = 'meta';
+  meta.textContent = new Date().toLocaleTimeString();
+
+  const textEl = document.createElement('div');
+  textEl.className = 'text';
+  textEl.textContent = text;
+
+  textWrap.appendChild(meta);
+  textWrap.appendChild(textEl);
+
+  left.appendChild(checkbox);
+  left.appendChild(textWrap);
+
+  const copyBtn = document.createElement('button');
+  copyBtn.className = 'copy-btn';
+  copyBtn.textContent = 'Copy';
+  copyBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleSelect(entry, seq, text, checkbox);
+  });
+
+  entry.appendChild(left);
+  entry.appendChild(copyBtn);
+  entry.dataset.seq = seq;
+
+  entry.addEventListener('click', () => toggleSelect(entry, seq, text, checkbox));
+
+  linesEl.insertBefore(entry, linesEl.firstChild);
+}
+
+function clearSelection() {
+  selected.clear();
+  document.querySelectorAll('.entry.selected').forEach(el => {
+    el.classList.remove('selected');
+    const cb = el.querySelector('input[type="checkbox"]');
+    if (cb) cb.checked = false;
+    const btn = el.querySelector('.copy-btn');
+    if (btn) { btn.textContent = 'Copy'; btn.classList.remove('copied'); }
+  });
+  updateSelectionBar();
+}
+
+function buildRecognition() {
+  const r = new SpeechRecognitionImpl();
+  r.continuous = true;
+  r.interimResults = true;
+  r.lang = 'en-US';
+
+  r.onresult = (event) => {
+    let interim = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const transcript = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        addFinalLine(transcript);
+      } else {
+        interim += transcript;
+      }
+    }
+    partialEl.textContent = interim;
+  };
+
+  r.onerror = (event) => {
+    // no-speech and audio-capture are expected during silence — ignore silently
+    if (event.error === 'no-speech' || event.error === 'audio-capture') return;
+    console.error('Speech recognition error:', event.error);
+  };
+
+  r.onend = () => {
+    if (running) {
+      restartCount++;
+      restartLabel.textContent = '⟳ auto-resumed ' + restartCount + 'x';
+      // Recreate recognition object to avoid stale state that triggers re-permission
+      recognition = buildRecognition();
+      try { recognition.start(); } catch (e) {}
+    } else {
+      statusDot.classList.remove('live');
+    }
+  };
+
+  return r;
+}
+
+function start() {
+  if (!SpeechRecognitionImpl) {
+    alert('Speech Recognition is not supported in this browser. Use Chrome or Edge.');
+    return;
+  }
+  recognition = buildRecognition();
+  recognition.start();
+  running = true;
+  statusDot.classList.add('live');
+  toggleBtn.textContent = '⏸ Pause Listening';
+}
+
+function stop() {
+  running = false;
+  if (recognition) recognition.stop();
+  statusDot.classList.remove('live');
+  toggleBtn.textContent = '▶ Resume Listening';
+  partialEl.textContent = '';
+  restartLabel.textContent = '';
+}
+
+toggleBtn.addEventListener('click', () => {
+  if (running) stop(); else start();
+});
+
+clearBtn.addEventListener('click', () => {
+  linesEl.innerHTML = '';
+  count = 0;
+  updateCount();
+  emptyState.classList.remove('hidden');
+  selected.clear();
+  updateSelectionBar();
+});
+
+clearSelectionBtn.addEventListener('click', clearSelection);
+const newMeetingBtn = document.getElementById('newMeetingBtn');
+newMeetingBtn.addEventListener('click', () => {
+  running = false;
+  if (recognition) {
+    try { recognition.stop(); } catch (e) {}
+    recognition = null;
+  }
+  statusDot.classList.remove('live');
+  toggleBtn.textContent = '▶ Start Listening';
+  partialEl.textContent = '';
+  restartLabel.textContent = '';
+  restartCount = 0;
+
+  // Clear transcript and selection
+  linesEl.innerHTML = '';
+  count = 0;
+  updateCount();
+  emptyState.classList.remove('hidden');
+  selected.clear();
+  updateSelectionBar();
+  seqCounter = 0;
+});
+
+// Click outside any entry clears selection
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.entry') && !e.target.closest('.selection-bar') && !e.target.closest('header')) {
+    clearSelection();
+  }
+});
+
+// ---- SAVE ----
+const saveBtn = document.getElementById('saveBtn');
+const saveMenu = document.getElementById('saveMenu');
+
+saveBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  saveMenu.classList.toggle('open');
+});
+document.addEventListener('click', () => saveMenu.classList.remove('open'));
+
+function getAllText() {
+  const entries = [...document.querySelectorAll('.entry')].reverse();
+  return entries.map(el => {
+    const time = el.querySelector('.meta')?.textContent || '';
+    const text = el.querySelector('.text')?.textContent || '';
+    return `[${time}] ${text}`;
+  }).join('\n\n');
+}
+
+function getAllJson() {
+  const entries = [...document.querySelectorAll('.entry')].reverse();
+  const data = entries.map(el => ({
+    time: el.querySelector('.meta')?.textContent || '',
+    text: el.querySelector('.text')?.textContent || '',
+  }));
+  return JSON.stringify({ meeting_transcript: data }, null, 2);
+}
+
+function downloadFile(content, filename, type) {
+  const blob = new Blob([content], { type });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function getFilename(ext) {
+  const d = new Date();
+  const stamp = d.toISOString().slice(0, 16).replace('T', '_').replace(':', '-');
+  return `meeting_transcript_${stamp}.${ext}`;
+}
+
+document.getElementById('saveTxt').addEventListener('click', () => {
+  downloadFile(getAllText(), getFilename('txt'), 'text/plain');
+  saveMenu.classList.remove('open');
+});
+
+document.getElementById('saveJson').addEventListener('click', () => {
+  downloadFile(getAllJson(), getFilename('json'), 'application/json');
+  saveMenu.classList.remove('open');
+});
+
+document.getElementById('saveDrive').addEventListener('click', () => {
+  navigator.clipboard.writeText(getAllText());
+  alert('Full transcript copied to clipboard!\n\nNow open Google Drive → New → Google Docs → paste (Ctrl+V).');
+  saveMenu.classList.remove('open');
+});
+
+// ---- SEARCH ----
+const searchInput = document.getElementById('searchInput');
+const searchCount = document.getElementById('searchCount');
+const searchPrev = document.getElementById('searchPrev');
+const searchNext = document.getElementById('searchNext');
+const searchClearBtn = document.getElementById('searchClear');
+
+let searchMatches = [];
+let searchIndex = -1;
+
+function clearSearch() {
+  document.querySelectorAll('.entry').forEach(el => {
+    el.classList.remove('highlight', 'highlight-current');
+    const textEl = el.querySelector('.text');
+    if (textEl) textEl.innerHTML = textEl.textContent; // strip marks
+  });
+  searchMatches = [];
+  searchIndex = -1;
+  searchCount.textContent = '';
+  searchClearBtn.style.display = 'none';
+}
+
+function escapeRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function doSearch(query) {
+  clearSearch();
+  if (!query.trim()) return;
+  searchClearBtn.style.display = '';
+  const re = new RegExp(`(${escapeRegex(query.trim())})`, 'gi');
+  const entries = [...document.querySelectorAll('.entry')];
+
+  entries.forEach(el => {
+    const textEl = el.querySelector('.text');
+    if (!textEl) return;
+    const original = textEl.textContent;
+    if (re.test(original)) {
+      searchMatches.push(el);
+      textEl.innerHTML = original.replace(re, '<mark>$1</mark>');
+      el.classList.add('highlight');
+    }
+    re.lastIndex = 0;
+  });
+
+  if (searchMatches.length > 0) {
+    searchIndex = 0;
+    highlightCurrent();
+  }
+  updateSearchCount();
+}
+
+function highlightCurrent() {
+  searchMatches.forEach((el, i) => {
+    el.classList.toggle('highlight-current', i === searchIndex);
+    const marks = el.querySelectorAll('mark');
+    marks.forEach(m => m.classList.toggle('current', i === searchIndex));
+  });
+  if (searchMatches[searchIndex]) {
+    searchMatches[searchIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+function updateSearchCount() {
+  if (searchMatches.length === 0) {
+    searchCount.textContent = searchInput.value.trim() ? 'No results' : '';
+  } else {
+    searchCount.textContent = `${searchIndex + 1} / ${searchMatches.length}`;
+  }
+}
+
+searchInput.addEventListener('input', () => doSearch(searchInput.value));
+searchPrev.addEventListener('click', () => {
+  if (!searchMatches.length) return;
+  searchIndex = (searchIndex - 1 + searchMatches.length) % searchMatches.length;
+  highlightCurrent();
+  updateSearchCount();
+});
+searchNext.addEventListener('click', () => {
+  if (!searchMatches.length) return;
+  searchIndex = (searchIndex + 1) % searchMatches.length;
+  highlightCurrent();
+  updateSearchCount();
+});
+searchClearBtn.addEventListener('click', () => {
+  searchInput.value = '';
+  clearSearch();
+});
+</script>
+</body>
+</html>
