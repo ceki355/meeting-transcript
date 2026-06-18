@@ -13,265 +13,109 @@
     --red: #ff6b6b;
     --text: #eaeaea;
     --muted: #8a8f98;
+    --you-bg: #1a3a2a;
+    --you-border: #3ddc84;
+    --them-bg: #1a2a3a;
+    --them-border: #4f9dff;
   }
   * { box-sizing: border-box; }
-  body {
-    font-family: -apple-system, "Segoe UI", Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    margin: 0;
-    padding: 0;
-  }
-  header {
-    position: sticky;
-    top: 0;
-    background: var(--bg);
-    padding: 16px 20px 12px;
-    border-bottom: 1px solid #2a2e38;
-    z-index: 10;
-  }
-  h1 {
-    font-size: 1.4em;
-    margin: 0 0 8px 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    background: var(--red);
-    display: inline-block;
-  }
-  .dot.live { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  body { font-family: -apple-system, "Segoe UI", Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
 
-  .controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 8px;
-  }
-  button {
-    background: var(--accent);
-    color: #08131f;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.95em;
-    font-weight: 600;
-  }
-  button.secondary {
-    background: #3a3f4b;
-    color: var(--text);
-    font-weight: 500;
-  }
+  header { position: sticky; top: 0; background: var(--bg); padding: 16px 20px 12px; border-bottom: 1px solid #2a2e38; z-index: 10; }
+  h1 { font-size: 1.4em; margin: 0 0 8px 0; display: flex; align-items: center; gap: 10px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); display: inline-block; }
+  .dot.live { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .version { font-size: 0.75em; color: var(--muted); background: #2a2e38; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
+
+  .controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  button { background: var(--accent); color: #08131f; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 0.95em; font-weight: 600; }
+  button.secondary { background: #3a3f4b; color: var(--text); font-weight: 500; }
+  button.active-mode { background: #2a3f5a; color: var(--accent); border: 1px solid var(--accent); }
   button:hover { opacity: 0.9; }
   button:active { transform: scale(0.98); }
 
-  .toggle-instructions {
-    background: none;
-    color: var(--muted);
-    text-decoration: underline;
-    font-weight: 400;
-    padding: 6px 0;
-    font-size: 0.85em;
-  }
+  .view-toggle { display: flex; gap: 4px; background: #2a2e38; border-radius: 8px; padding: 3px; }
+  .view-toggle button { padding: 6px 14px; font-size: 0.85em; border-radius: 6px; background: transparent; color: var(--muted); font-weight: 500; }
+  .view-toggle button.active { background: var(--accent); color: #08131f; }
 
-  .instructions {
-    background: #1c1f26;
-    border-radius: 8px;
-    padding: 12px 16px;
-    font-size: 0.9em;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-top: 8px;
-  }
+  .search-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+  #searchInput { flex: 1; max-width: 320px; background: #2a2e38; border: 1px solid #3a3f4b; color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 0.9em; outline: none; }
+  #searchInput:focus { border-color: var(--accent); }
+  #searchCount { color: var(--muted); font-size: 0.82em; min-width: 70px; }
+  .entry.highlight { outline: 2px solid var(--accent); }
+  .entry.highlight-current { outline: 2px solid var(--green) !important; }
+  mark { background: #4f9dff44; color: inherit; border-radius: 2px; padding: 0 1px; }
+  mark.current { background: #3ddc8466; }
+
+  .save-wrap { position: relative; display: inline-block; }
+  .save-menu { position: absolute; top: 110%; left: 0; background: #2a2e38; border: 1px solid #3a3f4b; border-radius: 8px; min-width: 200px; z-index: 30; box-shadow: 0 4px 16px rgba(0,0,0,0.4); overflow: hidden; display: none; }
+  .save-menu.open { display: block; }
+  .save-menu button { display: block; width: 100%; text-align: left; background: none; color: var(--text); padding: 10px 16px; font-size: 0.9em; font-weight: 400; border-radius: 0; }
+  .save-menu button:hover { background: #3a3f4b; }
+
+  .toggle-instructions { background: none; color: var(--muted); text-decoration: underline; font-weight: 400; padding: 6px 0; font-size: 0.85em; }
+  .instructions { background: #1c1f26; border-radius: 8px; padding: 12px 16px; font-size: 0.9em; color: var(--muted); line-height: 1.6; margin-top: 8px; }
   .instructions ol { margin: 8px 0 0 18px; padding: 0; }
-  .instructions code {
-    background: #2a2e38; padding: 2px 6px; border-radius: 4px; color: var(--text);
-  }
+  .instructions code { background: #2a2e38; padding: 2px 6px; border-radius: 4px; color: var(--text); }
   .hidden { display: none; }
 
   main { padding: 16px 20px; max-width: 800px; margin: 0 auto; }
 
-  #partialWrap {
-    min-height: 36px;
-    margin-bottom: 12px;
-    padding: 8px 12px;
-    border-left: 3px solid var(--accent);
-    border-radius: 4px;
-    background: #1c1f26;
-    display: none;
-  }
+  /* Partial text */
+  #partialWrap { min-height: 36px; margin-bottom: 12px; padding: 8px 12px; border-left: 3px solid var(--accent); border-radius: 4px; background: #1c1f26; display: none; }
   #partialWrap.active { display: block; }
-  #partial {
-    color: #b0b8c8;
-    font-style: italic;
-    font-size: 1.05em;
-    animation: pulse 2s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
-  }
+  #partialYouWrap { min-height: 36px; margin-bottom: 12px; padding: 8px 12px; border-left: 3px solid var(--green); border-radius: 4px; background: #1c2a1c; display: none; }
+  #partialYouWrap.active { display: block; }
+  #partial, #partialYou { color: #b0b8c8; font-style: italic; font-size: 1.05em; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
-  .empty-state {
-    color: var(--muted);
-    text-align: center;
-    padding: 40px 20px;
-    font-size: 0.95em;
-  }
+  .empty-state { color: var(--muted); text-align: center; padding: 40px 20px; font-size: 0.95em; }
 
-  .entry {
-    background: var(--card);
-    border-radius: 10px;
-    padding: 14px 16px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-    transition: background 0.15s;
-    cursor: pointer;
-  }
+  /* DEFAULT VIEW entries */
+  .entry { background: var(--card); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; transition: background 0.15s; cursor: pointer; }
   .entry:hover { background: var(--card-hover); }
   .entry.flash { background: var(--green) !important; }
   .entry.flash .text, .entry.flash .meta { color: #08131f; }
   .entry.selected { background: #1f3a52; outline: 1px solid var(--accent); }
-  .entry .meta {
-    color: var(--muted);
-    font-size: 0.78em;
-    margin-bottom: 4px;
-  }
-  .entry .text {
-    font-size: 1.08em;
-    line-height: 1.45;
-  }
+  .entry .meta { color: var(--muted); font-size: 0.78em; margin-bottom: 4px; }
+  .entry .text { font-size: 1.08em; line-height: 1.45; }
   .entry .left { flex: 1; min-width: 0; display: flex; gap: 12px; align-items: flex-start; }
-  .entry input[type="checkbox"] {
-    margin-top: 4px;
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-    accent-color: var(--accent);
-    cursor: pointer;
-  }
-  .copy-btn {
-    flex-shrink: 0;
-    background: #3a3f4b;
-    color: var(--text);
-    border: none;
-    padding: 8px 14px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.85em;
-    white-space: nowrap;
-  }
+  .entry input[type="checkbox"] { margin-top: 4px; width: 18px; height: 18px; flex-shrink: 0; accent-color: var(--accent); cursor: pointer; }
+  .copy-btn { flex-shrink: 0; background: #3a3f4b; color: var(--text); border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85em; white-space: nowrap; }
   .copy-btn:hover { background: #4a505e; }
   .copy-btn.copied { background: var(--green); color: #08131f; }
 
-  .selection-bar {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--accent);
-    color: #08131f;
-    padding: 12px 20px;
-    border-radius: 30px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    transition: transform 0.2s ease;
-    z-index: 20;
-    font-weight: 600;
-  }
-  .selection-bar.visible { transform: translateX(-50%) translateY(0); }
-  .selection-bar button {
-    background: #08131f;
-    color: var(--text);
-    padding: 8px 16px;
-    font-size: 0.85em;
-  }
-  .selection-bar .sel-clear {
-    background: transparent;
-    color: #08131f;
-    text-decoration: underline;
-    font-weight: 500;
-    padding: 4px 6px;
-  }
+  /* CONVERSATION VIEW */
+  #convoLines { display: flex; flex-direction: column; gap: 10px; }
+  .bubble-wrap { display: flex; flex-direction: column; }
+  .bubble-wrap.you { align-items: flex-end; }
+  .bubble-wrap.them { align-items: flex-start; }
+  .bubble { max-width: 75%; padding: 12px 16px; border-radius: 14px; cursor: pointer; position: relative; transition: opacity 0.15s; }
+  .bubble-wrap.them .bubble { background: var(--them-bg); border: 1px solid var(--them-border); border-bottom-left-radius: 4px; }
+  .bubble-wrap.you .bubble { background: var(--you-bg); border: 1px solid var(--you-border); border-bottom-right-radius: 4px; }
+  .bubble:hover { opacity: 0.85; }
+  .bubble.selected { outline: 2px solid white; }
+  .bubble.flash { background: var(--green) !important; }
+  .bubble .speaker-label { font-size: 0.75em; font-weight: 600; margin-bottom: 4px; }
+  .bubble-wrap.them .speaker-label { color: var(--accent); }
+  .bubble-wrap.you .speaker-label { color: var(--green); }
+  .bubble .btime { font-size: 0.72em; color: var(--muted); margin-top: 4px; }
+  .bubble .btext { font-size: 1.05em; line-height: 1.45; }
 
-  .header-top {
-    margin-bottom: 8px;
-  }
-  .version {
-    font-size: 0.75em;
-    color: var(--muted);
-    background: #2a2e38;
-    padding: 3px 8px;
-    border-radius: 20px;
-    font-weight: 500;
-    letter-spacing: 0.03em;
-  }
-  .search-bar {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 8px;
-  }
-  #searchInput {
-    flex: 1;
-    max-width: 320px;
-    background: #2a2e38;
-    border: 1px solid #3a3f4b;
-    color: var(--text);
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 0.9em;
-    outline: none;
-  }
-  #searchInput:focus { border-color: var(--accent); }
-  #searchCount { color: var(--muted); font-size: 0.82em; min-width: 70px; }
-  .entry.highlight { outline: 2px solid var(--accent); }
-  .entry.highlight-current { outline: 2px solid var(--green) !important; background: #1a3a2a !important; }
-  mark { background: #4f9dff44; color: inherit; border-radius: 2px; padding: 0 1px; }
-  mark.current { background: #3ddc8466; }
-  .save-menu {
-    position: absolute;
-    top: 110%;
-    left: 0;
-    background: #2a2e38;
-    border: 1px solid #3a3f4b;
-    border-radius: 8px;
-    min-width: 200px;
-    z-index: 30;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-    overflow: hidden;
-    display: none;
-  }
-  .save-menu.open { display: block; }
-  .save-menu button {
-    display: block;
-    width: 100%;
-    text-align: left;
-    background: none;
-    color: var(--text);
-    padding: 10px 16px;
-    font-size: 0.9em;
-    font-weight: 400;
-    border-radius: 0;
-  }
-  .save-menu button:hover { background: #3a3f4b; }
-  .save-wrap { position: relative; display: inline-block; }
+  /* Selection bar */
+  .selection-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent); color: #08131f; padding: 12px 20px; border-radius: 30px; display: flex; align-items: center; gap: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); transition: transform 0.2s ease; z-index: 20; font-weight: 600; }
+  .selection-bar.visible { transform: translateX(-50%) translateY(0); }
+  .selection-bar button { background: #08131f; color: var(--text); padding: 8px 16px; font-size: 0.85em; }
+  .selection-bar .sel-clear { background: transparent; color: #08131f; text-decoration: underline; font-weight: 500; padding: 4px 6px; }
+
+  footer { text-align: center; color: var(--muted); font-size: 0.8em; padding: 20px; }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="header-top">
-    <h1><span class="dot" id="statusDot"></span>Live Meeting Transcript <span class="version">v2.5</span></h1>
+  <div style="margin-bottom:8px;">
+    <h1><span class="dot" id="statusDot"></span>Live Meeting Transcript <span class="version">v2.6</span></h1>
   </div>
   <div class="controls">
     <button id="toggleBtn">▶ Start Listening</button>
@@ -280,13 +124,17 @@
     <div class="save-wrap">
       <button class="secondary" id="saveBtn">⬇ Save ▾</button>
       <div class="save-menu" id="saveMenu">
-        <button id="saveTxt">📄 Save as .txt (Desktop)</button>
+        <button id="saveTxt">📄 Save as .txt</button>
         <button id="saveJson">📋 Save as .json</button>
         <button id="saveDrive">☁ Copy for Google Drive</button>
       </div>
     </div>
-    <span id="countLabel" style="color: var(--muted); font-size: 0.85em;"></span>
-    <span id="restartLabel" style="color: var(--muted); font-size: 0.8em;"></span>
+    <div class="view-toggle">
+      <button id="viewDefault" class="active">Default</button>
+      <button id="viewConvo">Conversation</button>
+    </div>
+    <span id="countLabel" style="color:var(--muted);font-size:0.85em;"></span>
+    <span id="restartLabel" style="color:var(--muted);font-size:0.8em;"></span>
   </div>
   <div class="search-bar">
     <input type="text" id="searchInput" placeholder="🔍  Search transcript..." autocomplete="off" />
@@ -299,19 +147,20 @@
   <div class="instructions hidden" id="instructions">
     <strong>One-time setup before each call:</strong>
     <ol>
-      <li>Open <strong>Voicemeeter Banana</strong> and leave it running in the background.</li>
-      <li>In Windows Sound Settings → Recording, set <code>Voicemeeter Out B1</code> as the default device.</li>
-      <li>Click "Start Listening" below, and allow microphone access if prompted.</li>
-      <li>Join your Meet call as normal — you'll hear/speak as usual.</li>
-      <li>When a line appears below, click <strong>Copy</strong> and paste it into ChatGPT.</li>
+      <li><strong>Default view:</strong> Set <code>Stereo Mix</code> (or <code>Voicemeeter Out B1</code> on laptop) as your default Windows recording device.</li>
+      <li><strong>Conversation view:</strong> Click "Conversation" — Chrome will ask for mic permission for both your mic and the speaker output.</li>
+      <li>Click "Start Listening", join your Meet/Zoom call as normal.</li>
+      <li>Click any line to copy it, or select multiple and paste into ChatGPT.</li>
     </ol>
   </div>
 </header>
 
 <main>
   <div id="partialWrap"><span id="partial"></span></div>
+  <div id="partialYouWrap"><span id="partialYou">🎤 You: <span id="partialYouText"></span></span></div>
   <div id="emptyState" class="empty-state">No transcript yet — click "Start Listening" above.</div>
   <div id="lines"></div>
+  <div id="convoLines" style="display:none;"></div>
 </main>
 
 <footer>Runs entirely in your browser. Nothing is sent anywhere except to Chrome's built-in speech recognition.</footer>
@@ -323,130 +172,66 @@
 
 <script>
 const SpeechRecognitionImpl = window.SpeechRecognition || window.webkitSpeechRecognition;
-let recognition = null;
+let recognitionThem = null, recognitionYou = null;
 let running = false;
-let count = 0;
-let restartCount = 0;
-const restartLabel = document.getElementById('restartLabel');
+let count = 0, restartCount = 0, seqCounter = 0;
+let currentView = 'default'; // 'default' | 'convo'
+
+// All transcript entries stored here for view switching
+// { seq, speaker: 'them'|'you', text, time }
+const allEntries = [];
 
 const toggleBtn = document.getElementById('toggleBtn');
 const clearBtn = document.getElementById('clearBtn');
+const newMeetingBtn = document.getElementById('newMeetingBtn');
 const statusDot = document.getElementById('statusDot');
 const partialEl = document.getElementById('partial');
+const partialYouTextEl = document.getElementById('partialYouText');
 const linesEl = document.getElementById('lines');
+const convoLinesEl = document.getElementById('convoLines');
 const emptyState = document.getElementById('emptyState');
 const countLabel = document.getElementById('countLabel');
+const restartLabel = document.getElementById('restartLabel');
 const instrBtn = document.getElementById('instrBtn');
 const instructions = document.getElementById('instructions');
+const viewDefaultBtn = document.getElementById('viewDefault');
+const viewConvoBtn = document.getElementById('viewConvo');
+
+// Selection
+const selected = new Map();
+const selectionBar = document.getElementById('selectionBar');
+const selectionCount = document.getElementById('selectionCount');
+const clearSelectionBtn = document.getElementById('clearSelectionBtn');
 
 instrBtn.addEventListener('click', () => {
   instructions.classList.toggle('hidden');
-  instrBtn.textContent = instructions.classList.contains('hidden')
-    ? 'Show setup instructions' : 'Hide setup instructions';
+  instrBtn.textContent = instructions.classList.contains('hidden') ? 'Show setup instructions' : 'Hide setup instructions';
 });
 
 function updateCount() {
   countLabel.textContent = count > 0 ? (count + ' line' + (count === 1 ? '' : 's')) : '';
 }
 
-const selected = new Map(); // seq -> text
-let seqCounter = 0;
-const selectionBar = document.getElementById('selectionBar');
-const selectionCount = document.getElementById('selectionCount');
-const clearSelectionBtn = document.getElementById('clearSelectionBtn');
-
 function updateSelectionBar() {
   const n = selected.size;
-  selectionCount.textContent = n + (n === 1 ? ' selected — copied' : ' selected — copied');
+  selectionCount.textContent = n + ' selected — copied';
   selectionBar.classList.toggle('visible', n > 0);
 }
 
 function copySelection() {
   const ordered = [...selected.entries()].sort((a, b) => a[0] - b[0]);
-  const combined = ordered.map(([, t]) => t).join('\n\n');
+  const combined = ordered.map(([seq]) => {
+    const entry = allEntries.find(e => e.seq === seq);
+    if (!entry) return '';
+    const label = entry.speaker === 'you' ? 'You' : 'Them';
+    return `${label}: ${entry.text}`;
+  }).filter(Boolean).join('\n\n');
   if (combined) navigator.clipboard.writeText(combined);
-}
-
-function toggleSelect(entry, seq, text, checkbox) {
-  const copyBtn = entry.querySelector('.copy-btn');
-  if (selected.has(seq)) {
-    selected.delete(seq);
-    entry.classList.remove('selected');
-    checkbox.checked = false;
-    if (copyBtn) { copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied'); }
-  } else {
-    selected.set(seq, text);
-    entry.classList.add('selected');
-    checkbox.checked = true;
-    if (copyBtn) { copyBtn.textContent = '✓'; copyBtn.classList.add('copied'); }
-  }
-  updateSelectionBar();
-  copySelection();
-  entry.classList.add('flash');
-  setTimeout(() => entry.classList.remove('flash'), 250);
-}
-
-function addFinalLine(text) {
-  text = text.trim();
-  if (!text) return;
-
-  emptyState.classList.add('hidden');
-  count++;
-  updateCount();
-  seqCounter++;
-  const seq = seqCounter;
-
-  const entry = document.createElement('div');
-  entry.className = 'entry';
-
-  const left = document.createElement('div');
-  left.className = 'left';
-
-  const checkbox = document.createElement('input');
-  checkbox.type = 'checkbox';
-  checkbox.addEventListener('click', (e) => {
-    e.stopPropagation();
-    toggleSelect(entry, seq, text, checkbox);
-  });
-
-  const textWrap = document.createElement('div');
-  textWrap.style.flex = '1';
-  textWrap.style.minWidth = '0';
-
-  const meta = document.createElement('div');
-  meta.className = 'meta';
-  meta.textContent = new Date().toLocaleTimeString();
-
-  const textEl = document.createElement('div');
-  textEl.className = 'text';
-  textEl.textContent = text;
-
-  textWrap.appendChild(meta);
-  textWrap.appendChild(textEl);
-
-  left.appendChild(checkbox);
-  left.appendChild(textWrap);
-
-  const copyBtn = document.createElement('button');
-  copyBtn.className = 'copy-btn';
-  copyBtn.textContent = 'Copy';
-  copyBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    toggleSelect(entry, seq, text, checkbox);
-  });
-
-  entry.appendChild(left);
-  entry.appendChild(copyBtn);
-  entry.dataset.seq = seq;
-
-  entry.addEventListener('click', () => toggleSelect(entry, seq, text, checkbox));
-
-  linesEl.insertBefore(entry, linesEl.firstChild);
 }
 
 function clearSelection() {
   selected.clear();
-  document.querySelectorAll('.entry.selected').forEach(el => {
+  document.querySelectorAll('.entry.selected, .bubble.selected').forEach(el => {
     el.classList.remove('selected');
     const cb = el.querySelector('input[type="checkbox"]');
     if (cb) cb.checked = false;
@@ -456,7 +241,134 @@ function clearSelection() {
   updateSelectionBar();
 }
 
-function buildRecognition() {
+function toggleSelect(el, seq, isBubble) {
+  const copyBtn = el.querySelector('.copy-btn');
+  if (selected.has(seq)) {
+    selected.delete(seq);
+    el.classList.remove('selected');
+    if (!isBubble) {
+      const cb = el.querySelector('input[type="checkbox"]');
+      if (cb) cb.checked = false;
+      if (copyBtn) { copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied'); }
+    }
+  } else {
+    selected.set(seq, true);
+    el.classList.add('selected');
+    if (!isBubble && copyBtn) { copyBtn.textContent = '✓'; copyBtn.classList.add('copied'); }
+  }
+  updateSelectionBar();
+  copySelection();
+  el.classList.add('flash');
+  setTimeout(() => el.classList.remove('flash'), 250);
+}
+
+// ---- VIEW SWITCHING ----
+viewDefaultBtn.addEventListener('click', () => switchView('default'));
+viewConvoBtn.addEventListener('click', () => switchView('convo'));
+
+function switchView(view) {
+  currentView = view;
+  viewDefaultBtn.classList.toggle('active', view === 'default');
+  viewConvoBtn.classList.toggle('active', view === 'convo');
+  linesEl.style.display = view === 'default' ? '' : 'none';
+  convoLinesEl.style.display = view === 'convo' ? '' : 'none';
+  document.getElementById('partialWrap').style.display = view === 'default' ? '' : 'none';
+  document.getElementById('partialYouWrap').style.display = view === 'convo' ? '' : 'none';
+  clearSelection();
+}
+
+// ---- ADDING LINES ----
+function addLine(speaker, text) {
+  text = text.trim();
+  if (!text) return;
+
+  emptyState.classList.add('hidden');
+  count++;
+  updateCount();
+  seqCounter++;
+  const seq = seqCounter;
+  const time = new Date().toLocaleTimeString();
+
+  allEntries.push({ seq, speaker, text, time });
+
+  addDefaultEntry(seq, speaker, text, time);
+  addBubble(seq, speaker, text, time);
+}
+
+function addDefaultEntry(seq, speaker, text, time) {
+  const entry = document.createElement('div');
+  entry.className = 'entry';
+  entry.dataset.seq = seq;
+
+  const left = document.createElement('div');
+  left.className = 'left';
+
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.addEventListener('click', (e) => { e.stopPropagation(); toggleSelect(entry, seq, false); });
+
+  const textWrap = document.createElement('div');
+  textWrap.style.flex = '1';
+  textWrap.style.minWidth = '0';
+
+  const meta = document.createElement('div');
+  meta.className = 'meta';
+  const speakerLabel = speaker === 'you' ? '🎤 You' : '🎧 Them';
+  meta.textContent = `${speakerLabel} · ${time}`;
+
+  const textEl = document.createElement('div');
+  textEl.className = 'text';
+  textEl.textContent = text;
+
+  textWrap.appendChild(meta);
+  textWrap.appendChild(textEl);
+  left.appendChild(checkbox);
+  left.appendChild(textWrap);
+
+  const copyBtn = document.createElement('button');
+  copyBtn.className = 'copy-btn';
+  copyBtn.textContent = 'Copy';
+  copyBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleSelect(entry, seq, false); });
+
+  entry.appendChild(left);
+  entry.appendChild(copyBtn);
+  entry.addEventListener('click', () => toggleSelect(entry, seq, false));
+  linesEl.insertBefore(entry, linesEl.firstChild);
+}
+
+function addBubble(seq, speaker, text, time) {
+  const wrap = document.createElement('div');
+  wrap.className = `bubble-wrap ${speaker}`;
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.dataset.seq = seq;
+
+  const label = document.createElement('div');
+  label.className = 'speaker-label';
+  label.textContent = speaker === 'you' ? '🎤 You' : '🎧 Them';
+
+  const btext = document.createElement('div');
+  btext.className = 'btext';
+  btext.textContent = text;
+
+  const btime = document.createElement('div');
+  btime.className = 'btime';
+  btime.textContent = time;
+
+  bubble.appendChild(label);
+  bubble.appendChild(btext);
+  bubble.appendChild(btime);
+  bubble.addEventListener('click', () => toggleSelect(bubble, seq, true));
+
+  wrap.appendChild(bubble);
+  convoLinesEl.appendChild(wrap);
+  convoLinesEl.scrollTop = convoLinesEl.scrollHeight;
+}
+
+// ---- SPEECH RECOGNITION ----
+function buildRecognitionThem() {
+  if (!SpeechRecognitionImpl) return null;
   const r = new SpeechRecognitionImpl();
   r.continuous = true;
   r.interimResults = true;
@@ -465,104 +377,147 @@ function buildRecognition() {
   r.onresult = (event) => {
     let interim = '';
     for (let i = event.resultIndex; i < event.results.length; i++) {
-      const transcript = event.results[i][0].transcript;
+      const t = event.results[i][0].transcript;
       if (event.results[i].isFinal) {
-        addFinalLine(transcript);
+        addLine('them', t);
         partialEl.textContent = '';
-        partialEl.parentElement.classList.remove('active');
+        document.getElementById('partialWrap').classList.remove('active');
       } else {
-        interim += transcript;
+        interim += t;
       }
     }
     if (interim) {
       partialEl.textContent = interim;
-      partialEl.parentElement.classList.add('active');
+      document.getElementById('partialWrap').classList.add('active');
     }
   };
 
-  r.onerror = (event) => {
-    // no-speech and audio-capture are expected during silence — ignore silently
-    if (event.error === 'no-speech' || event.error === 'audio-capture') return;
-    console.error('Speech recognition error:', event.error);
+  r.onerror = (e) => {
+    if (e.error === 'no-speech' || e.error === 'audio-capture') return;
+    console.error('Them recognition error:', e.error);
   };
 
   r.onend = () => {
     if (running) {
       restartCount++;
-      restartLabel.textContent = '⟳ auto-resumed ' + restartCount + 'x';
-      // Recreate recognition object to avoid stale state that triggers re-permission
-      recognition = buildRecognition();
-      try { recognition.start(); } catch (e) {}
-    } else {
-      statusDot.classList.remove('live');
+      restartLabel.textContent = '⟳ ' + restartCount + 'x';
+      recognitionThem = buildRecognitionThem();
+      try { recognitionThem.start(); } catch (e) {}
+    }
+  };
+  return r;
+}
+
+function buildRecognitionYou() {
+  if (!SpeechRecognitionImpl) return null;
+  const r = new SpeechRecognitionImpl();
+  r.continuous = true;
+  r.interimResults = true;
+  r.lang = 'en-US';
+
+  r.onresult = (event) => {
+    let interim = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const t = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        addLine('you', t);
+        partialYouTextEl.textContent = '';
+        document.getElementById('partialYouWrap').classList.remove('active');
+      } else {
+        interim += t;
+      }
+    }
+    if (interim) {
+      partialYouTextEl.textContent = interim;
+      document.getElementById('partialYouWrap').classList.add('active');
     }
   };
 
+  r.onerror = (e) => {
+    if (e.error === 'no-speech' || e.error === 'audio-capture') return;
+    console.error('You recognition error:', e.error);
+  };
+
+  r.onend = () => {
+    if (running && currentView === 'convo') {
+      recognitionYou = buildRecognitionYou();
+      try { recognitionYou.start(); } catch (e) {}
+    }
+  };
   return r;
 }
 
 function start() {
   if (!SpeechRecognitionImpl) {
-    alert('Speech Recognition is not supported in this browser. Use Chrome or Edge.');
+    alert('Speech Recognition not supported. Use Chrome or Edge.');
     return;
   }
-  recognition = buildRecognition();
-  recognition.start();
   running = true;
   statusDot.classList.add('live');
   toggleBtn.textContent = '⏸ Pause Listening';
+
+  recognitionThem = buildRecognitionThem();
+  recognitionThem.start();
+
+  if (currentView === 'convo') {
+    recognitionYou = buildRecognitionYou();
+    recognitionYou.start();
+  }
 }
 
 function stop() {
   running = false;
-  if (recognition) recognition.stop();
+  if (recognitionThem) recognitionThem.stop();
+  if (recognitionYou) recognitionYou.stop();
   statusDot.classList.remove('live');
   toggleBtn.textContent = '▶ Resume Listening';
   partialEl.textContent = '';
-  partialEl.parentElement.classList.remove('active');
+  partialYouTextEl.textContent = '';
+  document.getElementById('partialWrap').classList.remove('active');
+  document.getElementById('partialYouWrap').classList.remove('active');
   restartLabel.textContent = '';
 }
 
-toggleBtn.addEventListener('click', () => {
-  if (running) stop(); else start();
+toggleBtn.addEventListener('click', () => { if (running) stop(); else start(); });
+
+// When switching to convo view while running, also start "you" recognition
+viewDefaultBtn.addEventListener('click', () => {
+  if (running && recognitionYou) { try { recognitionYou.stop(); } catch(e){} recognitionYou = null; }
+});
+viewConvoBtn.addEventListener('click', () => {
+  if (running && !recognitionYou) {
+    recognitionYou = buildRecognitionYou();
+    try { recognitionYou.start(); } catch(e){}
+  }
 });
 
-clearBtn.addEventListener('click', () => {
+function fullReset() {
+  stop();
+  restartCount = 0;
   linesEl.innerHTML = '';
-  count = 0;
+  convoLinesEl.innerHTML = '';
+  allEntries.length = 0;
+  count = 0; seqCounter = 0;
   updateCount();
   emptyState.classList.remove('hidden');
-  selected.clear();
-  updateSelectionBar();
+  clearSelection();
+}
+
+newMeetingBtn.addEventListener('click', fullReset);
+clearBtn.addEventListener('click', () => {
+  linesEl.innerHTML = '';
+  convoLinesEl.innerHTML = '';
+  allEntries.length = 0;
+  count = 0; seqCounter = 0;
+  updateCount();
+  emptyState.classList.remove('hidden');
+  clearSelection();
 });
 
 clearSelectionBtn.addEventListener('click', clearSelection);
-const newMeetingBtn = document.getElementById('newMeetingBtn');
-newMeetingBtn.addEventListener('click', () => {
-  running = false;
-  if (recognition) {
-    try { recognition.stop(); } catch (e) {}
-    recognition = null;
-  }
-  statusDot.classList.remove('live');
-  toggleBtn.textContent = '▶ Start Listening';
-  partialEl.textContent = '';
-  restartLabel.textContent = '';
-  restartCount = 0;
 
-  // Clear transcript and selection
-  linesEl.innerHTML = '';
-  count = 0;
-  updateCount();
-  emptyState.classList.remove('hidden');
-  selected.clear();
-  updateSelectionBar();
-  seqCounter = 0;
-});
-
-// Click outside any entry clears selection
 document.addEventListener('click', (e) => {
-  if (!e.target.closest('.entry') && !e.target.closest('.selection-bar') && !e.target.closest('header')) {
+  if (!e.target.closest('.entry') && !e.target.closest('.bubble') && !e.target.closest('.selection-bar') && !e.target.closest('header')) {
     clearSelection();
   }
 });
@@ -570,31 +525,15 @@ document.addEventListener('click', (e) => {
 // ---- SAVE ----
 const saveBtn = document.getElementById('saveBtn');
 const saveMenu = document.getElementById('saveMenu');
-
-saveBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  saveMenu.classList.toggle('open');
-});
+saveBtn.addEventListener('click', (e) => { e.stopPropagation(); saveMenu.classList.toggle('open'); });
 document.addEventListener('click', () => saveMenu.classList.remove('open'));
 
 function getAllText() {
-  const entries = [...document.querySelectorAll('.entry')].reverse();
-  return entries.map(el => {
-    const time = el.querySelector('.meta')?.textContent || '';
-    const text = el.querySelector('.text')?.textContent || '';
-    return `[${time}] ${text}`;
-  }).join('\n\n');
+  return allEntries.map(e => `[${e.time}] ${e.speaker === 'you' ? 'You' : 'Them'}: ${e.text}`).join('\n\n');
 }
-
 function getAllJson() {
-  const entries = [...document.querySelectorAll('.entry')].reverse();
-  const data = entries.map(el => ({
-    time: el.querySelector('.meta')?.textContent || '',
-    text: el.querySelector('.text')?.textContent || '',
-  }));
-  return JSON.stringify({ meeting_transcript: data }, null, 2);
+  return JSON.stringify({ meeting_transcript: allEntries }, null, 2);
 }
-
 function downloadFile(content, filename, type) {
   const blob = new Blob([content], { type });
   const a = document.createElement('a');
@@ -603,26 +542,16 @@ function downloadFile(content, filename, type) {
   a.click();
   URL.revokeObjectURL(a.href);
 }
-
 function getFilename(ext) {
   const d = new Date();
   const stamp = d.toISOString().slice(0, 16).replace('T', '_').replace(':', '-');
-  return `meeting_transcript_${stamp}.${ext}`;
+  return `meeting_${stamp}.${ext}`;
 }
-
-document.getElementById('saveTxt').addEventListener('click', () => {
-  downloadFile(getAllText(), getFilename('txt'), 'text/plain');
-  saveMenu.classList.remove('open');
-});
-
-document.getElementById('saveJson').addEventListener('click', () => {
-  downloadFile(getAllJson(), getFilename('json'), 'application/json');
-  saveMenu.classList.remove('open');
-});
-
+document.getElementById('saveTxt').addEventListener('click', () => { downloadFile(getAllText(), getFilename('txt'), 'text/plain'); saveMenu.classList.remove('open'); });
+document.getElementById('saveJson').addEventListener('click', () => { downloadFile(getAllJson(), getFilename('json'), 'application/json'); saveMenu.classList.remove('open'); });
 document.getElementById('saveDrive').addEventListener('click', () => {
   navigator.clipboard.writeText(getAllText());
-  alert('Full transcript copied to clipboard!\n\nNow open Google Drive → New → Google Docs → paste (Ctrl+V).');
+  alert('Full transcript copied!\nOpen Google Docs → paste (Ctrl+V).');
   saveMenu.classList.remove('open');
 });
 
@@ -632,35 +561,29 @@ const searchCount = document.getElementById('searchCount');
 const searchPrev = document.getElementById('searchPrev');
 const searchNext = document.getElementById('searchNext');
 const searchClearBtn = document.getElementById('searchClear');
-
-let searchMatches = [];
-let searchIndex = -1;
+let searchMatches = [], searchIndex = -1;
 
 function clearSearch() {
-  document.querySelectorAll('.entry').forEach(el => {
+  document.querySelectorAll('.entry, .bubble').forEach(el => {
     el.classList.remove('highlight', 'highlight-current');
-    const textEl = el.querySelector('.text');
-    if (textEl) textEl.innerHTML = textEl.textContent; // strip marks
+    const textEl = el.querySelector('.text, .btext');
+    if (textEl) textEl.innerHTML = textEl.textContent;
   });
-  searchMatches = [];
-  searchIndex = -1;
+  searchMatches = []; searchIndex = -1;
   searchCount.textContent = '';
   searchClearBtn.style.display = 'none';
 }
-
-function escapeRegex(s) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
+function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 function doSearch(query) {
   clearSearch();
   if (!query.trim()) return;
   searchClearBtn.style.display = '';
   const re = new RegExp(`(${escapeRegex(query.trim())})`, 'gi');
-  const entries = [...document.querySelectorAll('.entry')];
-
-  entries.forEach(el => {
-    const textEl = el.querySelector('.text');
+  const els = currentView === 'default'
+    ? [...document.querySelectorAll('.entry')]
+    : [...document.querySelectorAll('.bubble')];
+  els.forEach(el => {
+    const textEl = el.querySelector('.text, .btext');
     if (!textEl) return;
     const original = textEl.textContent;
     if (re.test(original)) {
@@ -670,50 +593,23 @@ function doSearch(query) {
     }
     re.lastIndex = 0;
   });
-
-  if (searchMatches.length > 0) {
-    searchIndex = 0;
-    highlightCurrent();
-  }
+  if (searchMatches.length > 0) { searchIndex = 0; highlightCurrent(); }
   updateSearchCount();
 }
-
 function highlightCurrent() {
   searchMatches.forEach((el, i) => {
     el.classList.toggle('highlight-current', i === searchIndex);
-    const marks = el.querySelectorAll('mark');
-    marks.forEach(m => m.classList.toggle('current', i === searchIndex));
+    el.querySelectorAll('mark').forEach(m => m.classList.toggle('current', i === searchIndex));
   });
-  if (searchMatches[searchIndex]) {
-    searchMatches[searchIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
+  if (searchMatches[searchIndex]) searchMatches[searchIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
-
 function updateSearchCount() {
-  if (searchMatches.length === 0) {
-    searchCount.textContent = searchInput.value.trim() ? 'No results' : '';
-  } else {
-    searchCount.textContent = `${searchIndex + 1} / ${searchMatches.length}`;
-  }
+  searchCount.textContent = searchMatches.length === 0 ? (searchInput.value.trim() ? 'No results' : '') : `${searchIndex + 1} / ${searchMatches.length}`;
 }
-
 searchInput.addEventListener('input', () => doSearch(searchInput.value));
-searchPrev.addEventListener('click', () => {
-  if (!searchMatches.length) return;
-  searchIndex = (searchIndex - 1 + searchMatches.length) % searchMatches.length;
-  highlightCurrent();
-  updateSearchCount();
-});
-searchNext.addEventListener('click', () => {
-  if (!searchMatches.length) return;
-  searchIndex = (searchIndex + 1) % searchMatches.length;
-  highlightCurrent();
-  updateSearchCount();
-});
-searchClearBtn.addEventListener('click', () => {
-  searchInput.value = '';
-  clearSearch();
-});
+searchPrev.addEventListener('click', () => { if (!searchMatches.length) return; searchIndex = (searchIndex - 1 + searchMatches.length) % searchMatches.length; highlightCurrent(); updateSearchCount(); });
+searchNext.addEventListener('click', () => { if (!searchMatches.length) return; searchIndex = (searchIndex + 1) % searchMatches.length; highlightCurrent(); updateSearchCount(); });
+searchClearBtn.addEventListener('click', () => { searchInput.value = ''; clearSearch(); });
 </script>
 </body>
 </html>
