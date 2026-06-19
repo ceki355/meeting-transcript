@@ -124,11 +124,12 @@
     gap: 12px;
     transition: background 0.15s;
     cursor: pointer;
+    border: 1px solid transparent;
   }
   .entry:hover { background: var(--card-hover); }
   .entry.flash { background: var(--green) !important; }
   .entry.flash .text, .entry.flash .meta { color: #08131f; }
-  .entry.selected { background: #1f3a52; outline: 1px solid var(--accent); }
+  .entry.selected { background: #1f3a52; border-color: var(--accent); }
   .entry .meta {
     color: var(--muted);
     font-size: 0.78em;
@@ -261,7 +262,7 @@
 
 <header>
   <div class="header-top">
-    <h1><span class="dot" id="statusDot"></span>Live Meeting Transcript <span class="version">v2.4</span></h1>
+    <h1><span class="dot" id="statusDot"></span>Live Meeting Transcript <span class="version">v2.8</span></h1>
   </div>
   <div class="controls">
     <button id="toggleBtn">▶ Start Listening</button>
