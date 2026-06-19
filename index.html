@@ -158,6 +158,8 @@
     cursor: pointer;
     font-size: 0.85em;
     white-space: nowrap;
+    min-width: 84px;
+    text-align: center;
   }
   .copy-btn:hover { background: #4a505e; }
   .copy-btn.copied { background: var(--green); color: #08131f; }
@@ -262,7 +264,7 @@
 
 <header>
   <div class="header-top">
-    <h1><span class="dot" id="statusDot"></span>Live Meeting Transcript <span class="version">v2.8</span></h1>
+    <h1><span class="dot" id="statusDot"></span>Live Meeting Transcript <span class="version">v2.9</span></h1>
   </div>
   <div class="controls">
     <button id="toggleBtn">▶ Start Listening</button>
@@ -369,7 +371,7 @@ function toggleSelect(entry, seq, text, checkbox) {
     selected.set(seq, text);
     entry.classList.add('selected');
     checkbox.checked = true;
-    if (copyBtn) { copyBtn.textContent = '✓'; copyBtn.classList.add('copied'); }
+    if (copyBtn) { copyBtn.textContent = '✓ Copied'; copyBtn.classList.add('copied'); }
   }
   updateSelectionBar();
   copySelection();
