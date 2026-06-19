@@ -11,6 +11,7 @@
     --accent: #4f9dff;
     --green: #3ddc84;
     --red: #ff6b6b;
+    --yellow: #f5c842;
     --text: #eaeaea;
     --muted: #8a8f98;
     --you-bg: #1a3a2a;
@@ -21,102 +22,106 @@
   * { box-sizing: border-box; }
   body { font-family: -apple-system, "Segoe UI", Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
 
-  header { position: sticky; top: 0; background: var(--bg); padding: 16px 20px 12px; border-bottom: 1px solid #2a2e38; z-index: 10; }
-  h1 { font-size: 1.4em; margin: 0 0 8px 0; display: flex; align-items: center; gap: 10px; }
+  header { position: sticky; top: 0; background: var(--bg); padding: 14px 20px 10px; border-bottom: 1px solid #2a2e38; z-index: 10; }
+  h1 { font-size: 1.3em; margin: 0 0 8px 0; display: flex; align-items: center; gap: 10px; }
   .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); display: inline-block; }
   .dot.live { background: var(--green); box-shadow: 0 0 8px var(--green); }
-  .version { font-size: 0.75em; color: var(--muted); background: #2a2e38; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
+  .version { font-size: 0.72em; color: var(--muted); background: #2a2e38; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
 
   .controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
-  button { background: var(--accent); color: #08131f; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 0.95em; font-weight: 600; }
+  button { background: var(--accent); color: #08131f; border: none; padding: 9px 18px; border-radius: 8px; cursor: pointer; font-size: 0.9em; font-weight: 600; transition: opacity 0.15s; }
   button.secondary { background: #3a3f4b; color: var(--text); font-weight: 500; }
-  button.active-mode { background: #2a3f5a; color: var(--accent); border: 1px solid var(--accent); }
-  button:hover { opacity: 0.9; }
-  button:active { transform: scale(0.98); }
+  button:hover { opacity: 0.88; }
+  button:active { transform: scale(0.97); }
 
-  .view-toggle { display: flex; gap: 4px; background: #2a2e38; border-radius: 8px; padding: 3px; }
-  .view-toggle button { padding: 6px 14px; font-size: 0.85em; border-radius: 6px; background: transparent; color: var(--muted); font-weight: 500; }
+  .view-toggle { display: flex; gap: 3px; background: #2a2e38; border-radius: 8px; padding: 3px; }
+  .view-toggle button { padding: 5px 14px; font-size: 0.82em; border-radius: 6px; background: transparent; color: var(--muted); font-weight: 500; }
   .view-toggle button.active { background: var(--accent); color: #08131f; }
 
   .search-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-  #searchInput { flex: 1; max-width: 320px; background: #2a2e38; border: 1px solid #3a3f4b; color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 0.9em; outline: none; }
+  #searchInput { flex: 1; max-width: 300px; background: #2a2e38; border: 1px solid #3a3f4b; color: var(--text); padding: 7px 12px; border-radius: 8px; font-size: 0.88em; outline: none; }
   #searchInput:focus { border-color: var(--accent); }
-  #searchCount { color: var(--muted); font-size: 0.82em; min-width: 70px; }
-  .entry.highlight { outline: 2px solid var(--accent); }
-  .entry.highlight-current { outline: 2px solid var(--green) !important; }
+  #searchCount { color: var(--muted); font-size: 0.8em; min-width: 70px; }
   mark { background: #4f9dff44; color: inherit; border-radius: 2px; padding: 0 1px; }
   mark.current { background: #3ddc8466; }
+  .entry.highlight, .bubble.highlight { outline: 2px solid var(--accent); }
+  .entry.highlight-current, .bubble.highlight-current { outline: 2px solid var(--green) !important; }
 
   .save-wrap { position: relative; display: inline-block; }
   .save-menu { position: absolute; top: 110%; left: 0; background: #2a2e38; border: 1px solid #3a3f4b; border-radius: 8px; min-width: 200px; z-index: 30; box-shadow: 0 4px 16px rgba(0,0,0,0.4); overflow: hidden; display: none; }
   .save-menu.open { display: block; }
-  .save-menu button { display: block; width: 100%; text-align: left; background: none; color: var(--text); padding: 10px 16px; font-size: 0.9em; font-weight: 400; border-radius: 0; }
+  .save-menu button { display: block; width: 100%; text-align: left; background: none; color: var(--text); padding: 10px 16px; font-size: 0.88em; font-weight: 400; border-radius: 0; }
   .save-menu button:hover { background: #3a3f4b; }
 
-  .toggle-instructions { background: none; color: var(--muted); text-decoration: underline; font-weight: 400; padding: 6px 0; font-size: 0.85em; }
-  .instructions { background: #1c1f26; border-radius: 8px; padding: 12px 16px; font-size: 0.9em; color: var(--muted); line-height: 1.6; margin-top: 8px; }
+  .toggle-instructions { background: none; color: var(--muted); text-decoration: underline; font-weight: 400; padding: 4px 0; font-size: 0.82em; cursor: pointer; border: none; }
+  .instructions { background: #1c1f26; border-radius: 8px; padding: 12px 16px; font-size: 0.88em; color: var(--muted); line-height: 1.6; margin-top: 6px; }
   .instructions ol { margin: 8px 0 0 18px; padding: 0; }
   .instructions code { background: #2a2e38; padding: 2px 6px; border-radius: 4px; color: var(--text); }
   .hidden { display: none; }
 
-  main { padding: 16px 20px; max-width: 800px; margin: 0 auto; }
+  /* Banners */
+  .banner { border-radius: 8px; padding: 10px 14px; font-size: 0.85em; margin-bottom: 10px; display: none; line-height: 1.5; }
+  .banner.show { display: block; }
+  .banner.info { background: #1c2a3a; border: 1px solid var(--them-border); color: var(--muted); }
+  .banner.warn { background: #2a2200; border: 1px solid var(--yellow); color: var(--yellow); }
+  .banner a, .banner span.link { color: var(--accent); cursor: pointer; text-decoration: underline; }
+
+  main { padding: 14px 20px; max-width: 820px; margin: 0 auto; }
 
   /* Partial text */
-  #partialWrap { min-height: 36px; margin-bottom: 12px; padding: 8px 12px; border-left: 3px solid var(--accent); border-radius: 4px; background: #1c1f26; display: none; }
-  #partialWrap.active { display: block; }
-  #partialYouWrap { min-height: 36px; margin-bottom: 12px; padding: 8px 12px; border-left: 3px solid var(--green); border-radius: 4px; background: #1c2a1c; display: none; }
-  #partialYouWrap.active { display: block; }
-  #partial, #partialYou { color: #b0b8c8; font-style: italic; font-size: 1.05em; animation: pulse 2s ease-in-out infinite; }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+  .partial-wrap { min-height: 34px; margin-bottom: 8px; padding: 8px 12px; border-radius: 4px; background: #1c1f26; display: none; }
+  .partial-wrap.active { display: block; }
+  #partialThem { border-left: 3px solid var(--accent); }
+  #partialYouWrap { border-left: 3px solid var(--green); }
+  .partial-text { color: #b0b8c8; font-style: italic; font-size: 0.98em; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.55} }
 
   .empty-state { color: var(--muted); text-align: center; padding: 40px 20px; font-size: 0.95em; }
 
-  /* DEFAULT VIEW entries */
-  .entry { background: var(--card); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; transition: background 0.15s; cursor: pointer; }
+  /* Default view */
+  .entry { background: var(--card); border-radius: 10px; padding: 13px 15px; margin-bottom: 9px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; cursor: pointer; transition: background 0.15s; }
   .entry:hover { background: var(--card-hover); }
   .entry.flash { background: var(--green) !important; }
-  .entry.flash .text, .entry.flash .meta { color: #08131f; }
+  .entry.flash .text, .entry.flash .meta { color: #08131f !important; }
   .entry.selected { background: #1f3a52; outline: 1px solid var(--accent); }
-  .entry .meta { color: var(--muted); font-size: 0.78em; margin-bottom: 4px; }
-  .entry .text { font-size: 1.08em; line-height: 1.45; }
-  .entry .left { flex: 1; min-width: 0; display: flex; gap: 12px; align-items: flex-start; }
-  .entry input[type="checkbox"] { margin-top: 4px; width: 18px; height: 18px; flex-shrink: 0; accent-color: var(--accent); cursor: pointer; }
-  .copy-btn { flex-shrink: 0; background: #3a3f4b; color: var(--text); border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85em; white-space: nowrap; }
+  .entry.selected.you-entry { background: #1a3020; outline: 1px solid var(--green); }
+  .entry .meta { font-size: 0.76em; margin-bottom: 3px; }
+  .entry .text { font-size: 1.04em; line-height: 1.45; }
+  .entry .left { flex: 1; min-width: 0; display: flex; gap: 11px; align-items: flex-start; }
+  .entry input[type="checkbox"] { margin-top: 3px; width: 17px; height: 17px; flex-shrink: 0; accent-color: var(--accent); cursor: pointer; }
+  .copy-btn { flex-shrink: 0; background: #3a3f4b; color: var(--text); border: none; padding: 7px 13px; border-radius: 6px; cursor: pointer; font-size: 0.82em; }
   .copy-btn:hover { background: #4a505e; }
   .copy-btn.copied { background: var(--green); color: #08131f; }
 
-  /* CONVERSATION VIEW */
+  /* Conversation view */
   #convoLines { display: flex; flex-direction: column; gap: 10px; }
   .bubble-wrap { display: flex; flex-direction: column; }
   .bubble-wrap.you { align-items: flex-end; }
   .bubble-wrap.them { align-items: flex-start; }
-  .bubble { max-width: 75%; padding: 12px 16px; border-radius: 14px; cursor: pointer; position: relative; transition: opacity 0.15s; }
+  .bubble { max-width: 74%; padding: 11px 15px; border-radius: 14px; cursor: pointer; transition: opacity 0.15s; }
   .bubble-wrap.them .bubble { background: var(--them-bg); border: 1px solid var(--them-border); border-bottom-left-radius: 4px; }
   .bubble-wrap.you .bubble { background: var(--you-bg); border: 1px solid var(--you-border); border-bottom-right-radius: 4px; }
-  .bubble:hover { opacity: 0.85; }
+  .bubble:hover { opacity: 0.82; }
   .bubble.selected { outline: 2px solid white; }
   .bubble.flash { background: var(--green) !important; }
-  .bubble .speaker-label { font-size: 0.75em; font-weight: 600; margin-bottom: 4px; }
+  .speaker-label { font-size: 0.72em; font-weight: 700; margin-bottom: 3px; letter-spacing: 0.04em; }
   .bubble-wrap.them .speaker-label { color: var(--accent); }
   .bubble-wrap.you .speaker-label { color: var(--green); }
-  .bubble .btime { font-size: 0.72em; color: var(--muted); margin-top: 4px; }
-  .bubble .btext { font-size: 1.05em; line-height: 1.45; }
+  .btime { font-size: 0.7em; color: var(--muted); margin-top: 4px; }
+  .btext { font-size: 1.02em; line-height: 1.45; }
 
   /* Selection bar */
-  .selection-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent); color: #08131f; padding: 12px 20px; border-radius: 30px; display: flex; align-items: center; gap: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); transition: transform 0.2s ease; z-index: 20; font-weight: 600; }
+  .selection-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent); color: #08131f; padding: 11px 20px; border-radius: 30px; display: flex; align-items: center; gap: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); transition: transform 0.2s ease; z-index: 20; font-weight: 600; font-size: 0.9em; }
   .selection-bar.visible { transform: translateX(-50%) translateY(0); }
-  .selection-bar button { background: #08131f; color: var(--text); padding: 8px 16px; font-size: 0.85em; }
-  .selection-bar .sel-clear { background: transparent; color: #08131f; text-decoration: underline; font-weight: 500; padding: 4px 6px; }
+  .sel-clear { background: transparent !important; color: #08131f !important; text-decoration: underline; font-weight: 500 !important; padding: 4px 6px !important; border: none; cursor: pointer; font-size: 0.88em; }
 
-  footer { text-align: center; color: var(--muted); font-size: 0.8em; padding: 20px; }
+  footer { text-align: center; color: var(--muted); font-size: 0.76em; padding: 18px; }
 </style>
 </head>
 <body>
 
 <header>
-  <div style="margin-bottom:8px;">
-    <h1><span class="dot" id="statusDot"></span>Live Meeting Transcript <span class="version">v2.6</span></h1>
-  </div>
+  <h1><span class="dot" id="statusDot"></span>Live Meeting Transcript <span class="version">v2.7</span></h1>
   <div class="controls">
     <button id="toggleBtn">▶ Start Listening</button>
     <button class="secondary" id="newMeetingBtn">New Meeting</button>
@@ -133,37 +138,58 @@
       <button id="viewDefault" class="active">Default</button>
       <button id="viewConvo">Conversation</button>
     </div>
-    <span id="countLabel" style="color:var(--muted);font-size:0.85em;"></span>
-    <span id="restartLabel" style="color:var(--muted);font-size:0.8em;"></span>
+    <span id="countLabel" style="color:var(--muted);font-size:0.83em;"></span>
+    <span id="restartLabel" style="color:var(--muted);font-size:0.78em;"></span>
   </div>
   <div class="search-bar">
     <input type="text" id="searchInput" placeholder="🔍  Search transcript..." autocomplete="off" />
     <span id="searchCount"></span>
-    <button class="secondary" id="searchPrev">▲</button>
-    <button class="secondary" id="searchNext">▼</button>
-    <button class="secondary" id="searchClear" style="display:none;">✕</button>
+    <button class="secondary" id="searchPrev" style="padding:6px 11px;">▲</button>
+    <button class="secondary" id="searchNext" style="padding:6px 11px;">▼</button>
+    <button class="secondary" id="searchClear" style="display:none;padding:6px 11px;">✕</button>
   </div>
   <button class="toggle-instructions" id="instrBtn">Show setup instructions</button>
   <div class="instructions hidden" id="instructions">
-    <strong>One-time setup before each call:</strong>
+    <strong>Setup:</strong>
     <ol>
-      <li><strong>Default view:</strong> Set <code>Stereo Mix</code> (or <code>Voicemeeter Out B1</code> on laptop) as your default Windows recording device.</li>
-      <li><strong>Conversation view:</strong> Click "Conversation" — Chrome will ask for mic permission for both your mic and the speaker output.</li>
-      <li>Click "Start Listening", join your Meet/Zoom call as normal.</li>
-      <li>Click any line to copy it, or select multiple and paste into ChatGPT.</li>
+      <li>Set <code>Stereo Mix</code> (desktop) or <code>Voicemeeter Out B1</code> (laptop) as your default Windows recording device.</li>
+      <li>Click <strong>Start Listening</strong> — captures the other party in Default view.</li>
+      <li>For <strong>Conversation mode</strong>: switch to Conversation view → click <strong>Open My Mic Tab</strong> → allow mic → click Start in that tab. Use earbuds/headphones for best separation of voices.</li>
     </ol>
   </div>
 </header>
 
 <main>
-  <div id="partialWrap"><span id="partial"></span></div>
-  <div id="partialYouWrap"><span id="partialYou">🎤 You: <span id="partialYouText"></span></span></div>
+  <!-- Info banner for conversation mode -->
+  <div class="banner info" id="convoInfoBanner">
+    💬 <strong>Conversation mode</strong> —
+    This tab captures <span style="color:var(--accent)">the other party (Them)</span>.
+    Click <span class="link" id="openMicTab">Open My Mic Tab ↗</span> to also capture
+    <span style="color:var(--green)">your voice (You)</span>. Both tabs sync automatically.
+  </div>
+
+  <!-- Warning banner for no earbuds -->
+  <div class="banner warn" id="earbудWarnBanner">
+    ⚠️ <strong>Tip:</strong> Use earbuds or headphones for best results in Conversation mode.
+    Without them, their voice may bleed into your mic channel and appear in both parties' lines.
+  </div>
+
+  <!-- Partial: Them -->
+  <div class="partial-wrap" id="partialThem">
+    <span class="partial-text" id="partialThemText"></span>
+  </div>
+
+  <!-- Partial: You (shown in convo mode) -->
+  <div class="partial-wrap" id="partialYouWrap">
+    <span class="partial-text" id="partialYouText">🎤 You: <span id="partialYouInner"></span></span>
+  </div>
+
   <div id="emptyState" class="empty-state">No transcript yet — click "Start Listening" above.</div>
   <div id="lines"></div>
   <div id="convoLines" style="display:none;"></div>
 </main>
 
-<footer>Runs entirely in your browser. Nothing is sent anywhere except to Chrome's built-in speech recognition.</footer>
+<footer>Runs entirely in your browser · Nothing stored or sent except to Chrome's built-in speech recognition</footer>
 
 <div class="selection-bar" id="selectionBar">
   <span id="selectionCount">0 selected</span>
@@ -171,22 +197,105 @@
 </div>
 
 <script>
+// ============================================================
+// MIC TAB MODE — if opened with ?role=mic, this is a mic-only capture tab
+// ============================================================
+if (location.search.includes('role=mic')) {
+  document.title = '🎤 Your Mic — Meeting Transcript';
+  document.body.innerHTML = `
+    <style>
+      body { font-family:-apple-system,Arial,sans-serif; background:#16181d; color:#eaeaea; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; padding:24px; text-align:center; margin:0; }
+      button { background:#3ddc84; color:#08131f; border:none; padding:12px 28px; border-radius:10px; font-size:1em; font-weight:700; cursor:pointer; }
+      button.pause { background:#ff6b6b; }
+      .status { background:#232730; padding:10px 22px; border-radius:30px; font-size:0.88em; color:#8a8f98; }
+      .partial { color:#8a8f98; font-style:italic; min-height:22px; font-size:0.92em; max-width:380px; animation:pulse 2s ease-in-out infinite; }
+      @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.55}}
+      .warn { background:#2a2200; border:1px solid #f5c842; color:#f5c842; border-radius:8px; padding:10px 14px; font-size:0.82em; max-width:380px; line-height:1.5; }
+    </style>
+    <div style="font-size:2.4em;">🎤</div>
+    <h2 style="margin:0;color:#3ddc84;">Your Mic Tab</h2>
+    <p style="color:#8a8f98;max-width:360px;margin:0;font-size:0.92em;">This tab listens to your microphone and sends your speech to the main transcript window. Keep this tab open during the meeting.</p>
+    <div class="warn">⚠️ For best results, use <strong>earbuds or headphones</strong>. Without them, the other party's voice may bleed into your mic and create duplicates.</div>
+    <div class="status" id="micStatus">● Not listening</div>
+    <button id="micStartBtn">▶ Start My Mic</button>
+    <div class="partial" id="micPartial"></div>
+    <p style="color:#444;font-size:0.76em;max-width:360px;">Make sure your <strong>physical microphone</strong> is set as Windows default recording device before starting. (Temporarily switch from Stereo Mix.)</p>
+  `;
+
+  const ch = new BroadcastChannel('meeting_transcript_v27');
+  const micStatus = document.getElementById('micStatus');
+  const micPartial = document.getElementById('micPartial');
+  const micStartBtn = document.getElementById('micStartBtn');
+  let micRunning = false, micRec = null;
+
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  function buildMicRec() {
+    if (!SR) { alert('Use Chrome or Edge.'); return null; }
+    const r = new SR();
+    r.continuous = true;
+    r.interimResults = true;
+    r.lang = 'en-US';
+    r.onresult = (ev) => {
+      let interim = '';
+      for (let i = ev.resultIndex; i < ev.results.length; i++) {
+        const t = ev.results[i][0].transcript;
+        if (ev.results[i].isFinal) {
+          ch.postMessage({ type: 'line', speaker: 'you', text: t });
+          micPartial.textContent = '';
+          ch.postMessage({ type: 'partial_clear_you' });
+        } else { interim += t; }
+      }
+      if (interim) { micPartial.textContent = interim; ch.postMessage({ type: 'partial_you', text: interim }); }
+    };
+    r.onerror = (e) => { if (e.error === 'no-speech' || e.error === 'audio-capture') return; console.error(e.error); };
+    r.onend = () => {
+      if (micRunning) { micRec = buildMicRec(); if (micRec) micRec.start(); }
+      else { micStatus.textContent = '● Not listening'; micStatus.style.color = '#8a8f98'; }
+    };
+    return r;
+  }
+
+  micStartBtn.addEventListener('click', () => {
+    if (micRunning) {
+      micRunning = false;
+      if (micRec) micRec.stop();
+      micStartBtn.textContent = '▶ Start My Mic';
+      micStartBtn.className = '';
+    } else {
+      micRunning = true;
+      micRec = buildMicRec();
+      if (micRec) {
+        micRec.start();
+        micStartBtn.textContent = '⏸ Pause My Mic';
+        micStartBtn.className = 'pause';
+        micStatus.textContent = '● Listening to your mic...';
+        micStatus.style.color = '#3ddc84';
+      }
+    }
+  });
+
+  // Prevent the rest of the main script from running
+  throw new Error('mic-tab-mode');
+}
+
+// ============================================================
+// MAIN TAB
+// ============================================================
+const channel = new BroadcastChannel('meeting_transcript_v27');
 const SpeechRecognitionImpl = window.SpeechRecognition || window.webkitSpeechRecognition;
-let recognitionThem = null, recognitionYou = null;
+let recognitionThem = null;
 let running = false;
 let count = 0, restartCount = 0, seqCounter = 0;
-let currentView = 'default'; // 'default' | 'convo'
-
-// All transcript entries stored here for view switching
-// { seq, speaker: 'them'|'you', text, time }
+let currentView = 'default';
 const allEntries = [];
+const selected = new Map();
 
+// Elements
 const toggleBtn = document.getElementById('toggleBtn');
 const clearBtn = document.getElementById('clearBtn');
 const newMeetingBtn = document.getElementById('newMeetingBtn');
 const statusDot = document.getElementById('statusDot');
-const partialEl = document.getElementById('partial');
-const partialYouTextEl = document.getElementById('partialYouText');
 const linesEl = document.getElementById('lines');
 const convoLinesEl = document.getElementById('convoLines');
 const emptyState = document.getElementById('emptyState');
@@ -194,37 +303,39 @@ const countLabel = document.getElementById('countLabel');
 const restartLabel = document.getElementById('restartLabel');
 const instrBtn = document.getElementById('instrBtn');
 const instructions = document.getElementById('instructions');
-const viewDefaultBtn = document.getElementById('viewDefault');
-const viewConvoBtn = document.getElementById('viewConvo');
-
-// Selection
-const selected = new Map();
 const selectionBar = document.getElementById('selectionBar');
 const selectionCount = document.getElementById('selectionCount');
 const clearSelectionBtn = document.getElementById('clearSelectionBtn');
+const partialThemWrap = document.getElementById('partialThem');
+const partialThemText = document.getElementById('partialThemText');
+const partialYouWrap = document.getElementById('partialYouWrap');
+const partialYouInner = document.getElementById('partialYouInner');
+const convoInfoBanner = document.getElementById('convoInfoBanner');
+const earbудWarnBanner = document.getElementById('earbудWarnBanner');
 
 instrBtn.addEventListener('click', () => {
   instructions.classList.toggle('hidden');
   instrBtn.textContent = instructions.classList.contains('hidden') ? 'Show setup instructions' : 'Hide setup instructions';
 });
 
-function updateCount() {
-  countLabel.textContent = count > 0 ? (count + ' line' + (count === 1 ? '' : 's')) : '';
-}
+// ---- RECEIVE FROM MIC TAB ----
+channel.onmessage = (ev) => {
+  const msg = ev.data;
+  if (msg.type === 'line' && msg.speaker === 'you') addLine('you', msg.text, true);
+  if (msg.type === 'partial_you') { partialYouInner.textContent = msg.text; partialYouWrap.classList.add('active'); }
+  if (msg.type === 'partial_clear_you') { partialYouInner.textContent = ''; partialYouWrap.classList.remove('active'); }
+};
 
+// ---- SELECTION ----
 function updateSelectionBar() {
-  const n = selected.size;
-  selectionCount.textContent = n + ' selected — copied';
-  selectionBar.classList.toggle('visible', n > 0);
+  selectionCount.textContent = selected.size + ' selected — copied';
+  selectionBar.classList.toggle('visible', selected.size > 0);
 }
 
 function copySelection() {
-  const ordered = [...selected.entries()].sort((a, b) => a[0] - b[0]);
-  const combined = ordered.map(([seq]) => {
-    const entry = allEntries.find(e => e.seq === seq);
-    if (!entry) return '';
-    const label = entry.speaker === 'you' ? 'You' : 'Them';
-    return `${label}: ${entry.text}`;
+  const combined = [...selected.keys()].sort((a,b) => a-b).map(seq => {
+    const e = allEntries.find(x => x.seq === seq);
+    return e ? `${e.speaker === 'you' ? 'You' : 'Them'}: ${e.text}` : '';
   }).filter(Boolean).join('\n\n');
   if (combined) navigator.clipboard.writeText(combined);
 }
@@ -262,68 +373,80 @@ function toggleSelect(el, seq, isBubble) {
   setTimeout(() => el.classList.remove('flash'), 250);
 }
 
+clearSelectionBtn.addEventListener('click', clearSelection);
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.entry') && !e.target.closest('.bubble') &&
+      !e.target.closest('.selection-bar') && !e.target.closest('header') &&
+      !e.target.closest('.banner')) {
+    clearSelection();
+  }
+});
+
 // ---- VIEW SWITCHING ----
-viewDefaultBtn.addEventListener('click', () => switchView('default'));
-viewConvoBtn.addEventListener('click', () => switchView('convo'));
+document.getElementById('viewDefault').addEventListener('click', () => switchView('default'));
+document.getElementById('viewConvo').addEventListener('click', () => switchView('convo'));
 
 function switchView(view) {
   currentView = view;
-  viewDefaultBtn.classList.toggle('active', view === 'default');
-  viewConvoBtn.classList.toggle('active', view === 'convo');
+  document.getElementById('viewDefault').classList.toggle('active', view === 'default');
+  document.getElementById('viewConvo').classList.toggle('active', view === 'convo');
   linesEl.style.display = view === 'default' ? '' : 'none';
-  convoLinesEl.style.display = view === 'convo' ? '' : 'none';
-  document.getElementById('partialWrap').style.display = view === 'default' ? '' : 'none';
-  document.getElementById('partialYouWrap').style.display = view === 'convo' ? '' : 'none';
+  convoLinesEl.style.display = view === 'convo' ? 'flex' : 'none';
+  convoInfoBanner.classList.toggle('show', view === 'convo');
+  earbудWarnBanner.classList.toggle('show', view === 'convo');
+  partialYouWrap.style.display = view === 'convo' ? '' : 'none';
   clearSelection();
+  clearSearch();
 }
 
-// ---- ADDING LINES ----
-function addLine(speaker, text) {
+// ---- OPEN MIC TAB ----
+document.getElementById('openMicTab').addEventListener('click', () => {
+  window.open(location.href.split('?')[0] + '?role=mic', '_blank');
+});
+
+// ---- ADD LINE ----
+function addLine(speaker, text, fromBroadcast) {
   text = text.trim();
   if (!text) return;
-
   emptyState.classList.add('hidden');
   count++;
-  updateCount();
+  countLabel.textContent = count + ' line' + (count === 1 ? '' : 's');
   seqCounter++;
   const seq = seqCounter;
   const time = new Date().toLocaleTimeString();
-
   allEntries.push({ seq, speaker, text, time });
-
   addDefaultEntry(seq, speaker, text, time);
   addBubble(seq, speaker, text, time);
 }
 
 function addDefaultEntry(seq, speaker, text, time) {
   const entry = document.createElement('div');
-  entry.className = 'entry';
+  entry.className = 'entry' + (speaker === 'you' ? ' you-entry' : '');
   entry.dataset.seq = seq;
 
   const left = document.createElement('div');
   left.className = 'left';
 
-  const checkbox = document.createElement('input');
-  checkbox.type = 'checkbox';
-  checkbox.addEventListener('click', (e) => { e.stopPropagation(); toggleSelect(entry, seq, false); });
+  const cb = document.createElement('input');
+  cb.type = 'checkbox';
+  cb.addEventListener('click', (e) => { e.stopPropagation(); toggleSelect(entry, seq, false); });
 
-  const textWrap = document.createElement('div');
-  textWrap.style.flex = '1';
-  textWrap.style.minWidth = '0';
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'flex:1;min-width:0;';
 
   const meta = document.createElement('div');
   meta.className = 'meta';
-  const speakerLabel = speaker === 'you' ? '🎤 You' : '🎧 Them';
-  meta.textContent = `${speakerLabel} · ${time}`;
+  meta.style.color = speaker === 'you' ? 'var(--green)' : 'var(--accent)';
+  meta.textContent = (speaker === 'you' ? '🎤 You' : '🎧 Them') + ' · ' + time;
 
   const textEl = document.createElement('div');
   textEl.className = 'text';
   textEl.textContent = text;
 
-  textWrap.appendChild(meta);
-  textWrap.appendChild(textEl);
-  left.appendChild(checkbox);
-  left.appendChild(textWrap);
+  wrap.appendChild(meta);
+  wrap.appendChild(textEl);
+  left.appendChild(cb);
+  left.appendChild(wrap);
 
   const copyBtn = document.createElement('button');
   copyBtn.className = 'copy-btn';
@@ -338,7 +461,7 @@ function addDefaultEntry(seq, speaker, text, time) {
 
 function addBubble(seq, speaker, text, time) {
   const wrap = document.createElement('div');
-  wrap.className = `bubble-wrap ${speaker}`;
+  wrap.className = 'bubble-wrap ' + speaker;
 
   const bubble = document.createElement('div');
   bubble.className = 'bubble';
@@ -346,7 +469,7 @@ function addBubble(seq, speaker, text, time) {
 
   const label = document.createElement('div');
   label.className = 'speaker-label';
-  label.textContent = speaker === 'you' ? '🎤 You' : '🎧 Them';
+  label.textContent = speaker === 'you' ? '🎤 YOU' : '🎧 THEM';
 
   const btext = document.createElement('div');
   btext.className = 'btext';
@@ -360,13 +483,12 @@ function addBubble(seq, speaker, text, time) {
   bubble.appendChild(btext);
   bubble.appendChild(btime);
   bubble.addEventListener('click', () => toggleSelect(bubble, seq, true));
-
   wrap.appendChild(bubble);
   convoLinesEl.appendChild(wrap);
   convoLinesEl.scrollTop = convoLinesEl.scrollHeight;
 }
 
-// ---- SPEECH RECOGNITION ----
+// ---- RECOGNITION (Them) ----
 function buildRecognitionThem() {
   if (!SpeechRecognitionImpl) return null;
   const r = new SpeechRecognitionImpl();
@@ -374,152 +496,71 @@ function buildRecognitionThem() {
   r.interimResults = true;
   r.lang = 'en-US';
 
-  r.onresult = (event) => {
+  r.onresult = (ev) => {
     let interim = '';
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      const t = event.results[i][0].transcript;
-      if (event.results[i].isFinal) {
+    for (let i = ev.resultIndex; i < ev.results.length; i++) {
+      const t = ev.results[i][0].transcript;
+      if (ev.results[i].isFinal) {
         addLine('them', t);
-        partialEl.textContent = '';
-        document.getElementById('partialWrap').classList.remove('active');
-      } else {
-        interim += t;
-      }
+        partialThemText.textContent = '';
+        partialThemWrap.classList.remove('active');
+      } else { interim += t; }
     }
-    if (interim) {
-      partialEl.textContent = interim;
-      document.getElementById('partialWrap').classList.add('active');
-    }
+    if (interim) { partialThemText.textContent = interim; partialThemWrap.classList.add('active'); }
   };
 
-  r.onerror = (e) => {
-    if (e.error === 'no-speech' || e.error === 'audio-capture') return;
-    console.error('Them recognition error:', e.error);
-  };
+  r.onerror = (e) => { if (e.error === 'no-speech' || e.error === 'audio-capture') return; console.error('Them:', e.error); };
 
   r.onend = () => {
     if (running) {
       restartCount++;
       restartLabel.textContent = '⟳ ' + restartCount + 'x';
       recognitionThem = buildRecognitionThem();
-      try { recognitionThem.start(); } catch (e) {}
-    }
-  };
-  return r;
-}
-
-function buildRecognitionYou() {
-  if (!SpeechRecognitionImpl) return null;
-  const r = new SpeechRecognitionImpl();
-  r.continuous = true;
-  r.interimResults = true;
-  r.lang = 'en-US';
-
-  r.onresult = (event) => {
-    let interim = '';
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      const t = event.results[i][0].transcript;
-      if (event.results[i].isFinal) {
-        addLine('you', t);
-        partialYouTextEl.textContent = '';
-        document.getElementById('partialYouWrap').classList.remove('active');
-      } else {
-        interim += t;
-      }
-    }
-    if (interim) {
-      partialYouTextEl.textContent = interim;
-      document.getElementById('partialYouWrap').classList.add('active');
-    }
-  };
-
-  r.onerror = (e) => {
-    if (e.error === 'no-speech' || e.error === 'audio-capture') return;
-    console.error('You recognition error:', e.error);
-  };
-
-  r.onend = () => {
-    if (running && currentView === 'convo') {
-      recognitionYou = buildRecognitionYou();
-      try { recognitionYou.start(); } catch (e) {}
+      try { recognitionThem.start(); } catch(e) {}
+    } else {
+      statusDot.classList.remove('live');
     }
   };
   return r;
 }
 
 function start() {
-  if (!SpeechRecognitionImpl) {
-    alert('Speech Recognition not supported. Use Chrome or Edge.');
-    return;
-  }
+  if (!SpeechRecognitionImpl) { alert('Use Chrome or Edge.'); return; }
   running = true;
   statusDot.classList.add('live');
   toggleBtn.textContent = '⏸ Pause Listening';
-
   recognitionThem = buildRecognitionThem();
   recognitionThem.start();
-
-  if (currentView === 'convo') {
-    recognitionYou = buildRecognitionYou();
-    recognitionYou.start();
-  }
 }
 
 function stop() {
   running = false;
   if (recognitionThem) recognitionThem.stop();
-  if (recognitionYou) recognitionYou.stop();
   statusDot.classList.remove('live');
   toggleBtn.textContent = '▶ Resume Listening';
-  partialEl.textContent = '';
-  partialYouTextEl.textContent = '';
-  document.getElementById('partialWrap').classList.remove('active');
-  document.getElementById('partialYouWrap').classList.remove('active');
+  partialThemText.textContent = '';
+  partialThemWrap.classList.remove('active');
   restartLabel.textContent = '';
 }
 
 toggleBtn.addEventListener('click', () => { if (running) stop(); else start(); });
 
-// When switching to convo view while running, also start "you" recognition
-viewDefaultBtn.addEventListener('click', () => {
-  if (running && recognitionYou) { try { recognitionYou.stop(); } catch(e){} recognitionYou = null; }
-});
-viewConvoBtn.addEventListener('click', () => {
-  if (running && !recognitionYou) {
-    recognitionYou = buildRecognitionYou();
-    try { recognitionYou.start(); } catch(e){}
-  }
-});
-
 function fullReset() {
-  stop();
-  restartCount = 0;
-  linesEl.innerHTML = '';
-  convoLinesEl.innerHTML = '';
-  allEntries.length = 0;
-  count = 0; seqCounter = 0;
-  updateCount();
+  stop(); restartCount = 0;
+  linesEl.innerHTML = ''; convoLinesEl.innerHTML = '';
+  allEntries.length = 0; count = 0; seqCounter = 0;
+  countLabel.textContent = '';
   emptyState.classList.remove('hidden');
   clearSelection();
 }
 
 newMeetingBtn.addEventListener('click', fullReset);
 clearBtn.addEventListener('click', () => {
-  linesEl.innerHTML = '';
-  convoLinesEl.innerHTML = '';
-  allEntries.length = 0;
-  count = 0; seqCounter = 0;
-  updateCount();
+  linesEl.innerHTML = ''; convoLinesEl.innerHTML = '';
+  allEntries.length = 0; count = 0; seqCounter = 0;
+  countLabel.textContent = '';
   emptyState.classList.remove('hidden');
   clearSelection();
-});
-
-clearSelectionBtn.addEventListener('click', clearSelection);
-
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.entry') && !e.target.closest('.bubble') && !e.target.closest('.selection-bar') && !e.target.closest('header')) {
-    clearSelection();
-  }
 });
 
 // ---- SAVE ----
@@ -531,33 +572,21 @@ document.addEventListener('click', () => saveMenu.classList.remove('open'));
 function getAllText() {
   return allEntries.map(e => `[${e.time}] ${e.speaker === 'you' ? 'You' : 'Them'}: ${e.text}`).join('\n\n');
 }
-function getAllJson() {
-  return JSON.stringify({ meeting_transcript: allEntries }, null, 2);
-}
+function getAllJson() { return JSON.stringify({ meeting_transcript: allEntries }, null, 2); }
 function downloadFile(content, filename, type) {
   const blob = new Blob([content], { type });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(a.href);
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename; a.click(); URL.revokeObjectURL(a.href);
 }
 function getFilename(ext) {
-  const d = new Date();
-  const stamp = d.toISOString().slice(0, 16).replace('T', '_').replace(':', '-');
-  return `meeting_${stamp}.${ext}`;
+  return `meeting_${new Date().toISOString().slice(0,16).replace('T','_').replace(':','-')}.${ext}`;
 }
 document.getElementById('saveTxt').addEventListener('click', () => { downloadFile(getAllText(), getFilename('txt'), 'text/plain'); saveMenu.classList.remove('open'); });
 document.getElementById('saveJson').addEventListener('click', () => { downloadFile(getAllJson(), getFilename('json'), 'application/json'); saveMenu.classList.remove('open'); });
-document.getElementById('saveDrive').addEventListener('click', () => {
-  navigator.clipboard.writeText(getAllText());
-  alert('Full transcript copied!\nOpen Google Docs → paste (Ctrl+V).');
-  saveMenu.classList.remove('open');
-});
+document.getElementById('saveDrive').addEventListener('click', () => { navigator.clipboard.writeText(getAllText()); alert('Copied! Open Google Docs → paste (Ctrl+V).'); saveMenu.classList.remove('open'); });
 
 // ---- SEARCH ----
 const searchInput = document.getElementById('searchInput');
-const searchCount = document.getElementById('searchCount');
+const searchCountEl = document.getElementById('searchCount');
 const searchPrev = document.getElementById('searchPrev');
 const searchNext = document.getElementById('searchNext');
 const searchClearBtn = document.getElementById('searchClear');
@@ -566,36 +595,33 @@ let searchMatches = [], searchIndex = -1;
 function clearSearch() {
   document.querySelectorAll('.entry, .bubble').forEach(el => {
     el.classList.remove('highlight', 'highlight-current');
-    const textEl = el.querySelector('.text, .btext');
-    if (textEl) textEl.innerHTML = textEl.textContent;
+    const t = el.querySelector('.text, .btext');
+    if (t) t.innerHTML = t.textContent;
   });
   searchMatches = []; searchIndex = -1;
-  searchCount.textContent = '';
+  searchCountEl.textContent = '';
   searchClearBtn.style.display = 'none';
 }
+
 function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
 function doSearch(query) {
   clearSearch();
   if (!query.trim()) return;
   searchClearBtn.style.display = '';
   const re = new RegExp(`(${escapeRegex(query.trim())})`, 'gi');
-  const els = currentView === 'default'
-    ? [...document.querySelectorAll('.entry')]
-    : [...document.querySelectorAll('.bubble')];
+  const els = currentView === 'default' ? [...document.querySelectorAll('.entry')] : [...document.querySelectorAll('.bubble')];
   els.forEach(el => {
     const textEl = el.querySelector('.text, .btext');
     if (!textEl) return;
-    const original = textEl.textContent;
-    if (re.test(original)) {
-      searchMatches.push(el);
-      textEl.innerHTML = original.replace(re, '<mark>$1</mark>');
-      el.classList.add('highlight');
-    }
+    const orig = textEl.textContent;
+    if (re.test(orig)) { searchMatches.push(el); textEl.innerHTML = orig.replace(re, '<mark>$1</mark>'); el.classList.add('highlight'); }
     re.lastIndex = 0;
   });
   if (searchMatches.length > 0) { searchIndex = 0; highlightCurrent(); }
   updateSearchCount();
 }
+
 function highlightCurrent() {
   searchMatches.forEach((el, i) => {
     el.classList.toggle('highlight-current', i === searchIndex);
@@ -603,9 +629,13 @@ function highlightCurrent() {
   });
   if (searchMatches[searchIndex]) searchMatches[searchIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
+
 function updateSearchCount() {
-  searchCount.textContent = searchMatches.length === 0 ? (searchInput.value.trim() ? 'No results' : '') : `${searchIndex + 1} / ${searchMatches.length}`;
+  searchCountEl.textContent = searchMatches.length === 0
+    ? (searchInput.value.trim() ? 'No results' : '')
+    : `${searchIndex + 1} / ${searchMatches.length}`;
 }
+
 searchInput.addEventListener('input', () => doSearch(searchInput.value));
 searchPrev.addEventListener('click', () => { if (!searchMatches.length) return; searchIndex = (searchIndex - 1 + searchMatches.length) % searchMatches.length; highlightCurrent(); updateSearchCount(); });
 searchNext.addEventListener('click', () => { if (!searchMatches.length) return; searchIndex = (searchIndex + 1) % searchMatches.length; highlightCurrent(); updateSearchCount(); });
