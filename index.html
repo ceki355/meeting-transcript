@@ -127,6 +127,9 @@
     border: 1px solid transparent;
   }
   .entry:hover { background: var(--card-hover); }
+  .entry { cursor: grab; }
+  .entry:active { cursor: grabbing; }
+  .entry.dragging { opacity: 0.4; cursor: grabbing; }
   .entry.flash { background: var(--green) !important; }
   .entry.flash .text, .entry.flash .meta { color: #08131f; }
   .entry.selected { background: #1f3a52; border-color: var(--accent); }
@@ -264,7 +267,7 @@
 
 <header>
   <div class="header-top">
-    <h1><span class="dot" id="statusDot"></span>Live Meeting Transcript <span class="version">v2.10</span></h1>
+    <h1><span class="dot" id="statusDot"></span>Live Meeting Transcript <span class="version">v2.11</span></h1>
   </div>
   <div class="controls">
     <button id="toggleBtn">▶ Start Listening</button>
@@ -296,7 +299,7 @@
       <li>In Windows Sound Settings → Recording, set <code>Voicemeeter Out B1</code> as the default device.</li>
       <li>Click "Start Listening" below, and allow microphone access if prompted.</li>
       <li>Join your Meet call as normal — you'll hear/speak as usual.</li>
-      <li>When a line appears below, click <strong>Copy</strong> and paste it into ChatGPT.</li>
+      <li>When a line appears below, click <strong>Copy</strong> and paste it into ChatGPT — or <strong>drag</strong> the line directly into another app (Word, ChatGPT, a search box, etc.).</li>
     </ol>
   </div>
 </header>
@@ -431,6 +434,26 @@ function addFinalLine(text) {
   entry.appendChild(left);
   entry.appendChild(copyBtn);
   entry.dataset.seq = seq;
+  entry.draggable = true;
+
+  entry.addEventListener('dragstart', (e) => {
+    // If this entry is part of a multi-selection, drag all selected lines
+    // combined (in chronological order). Otherwise just drag this line.
+    let dragText;
+    if (selected.has(seq) && selected.size > 1) {
+      const ordered = [...selected.entries()].sort((a, b) => a[0] - b[0]);
+      dragText = ordered.map(([, t]) => t).join('\n\n');
+    } else {
+      dragText = text;
+    }
+    e.dataTransfer.setData('text/plain', dragText);
+    e.dataTransfer.effectAllowed = 'copy';
+    entry.classList.add('dragging');
+  });
+
+  entry.addEventListener('dragend', () => {
+    entry.classList.remove('dragging');
+  });
 
   entry.addEventListener('click', () => toggleSelect(entry, seq, text, checkbox));
 
